@@ -15,6 +15,8 @@ LAWS.md
 # Python
 __pycache__/
 *.py[cod]
+.venv/
+*.egg-info/
 
 # OS
 .DS_Store

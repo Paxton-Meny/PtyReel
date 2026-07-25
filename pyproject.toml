@@ -1,0 +1,38 @@
+[project]
+name = "ptyreel"
+version = "0.1.0"
+description = "Record scripted terminal sessions as self-contained animated SVGs."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Paxton-Meny" }]
+keywords = ["terminal", "pty", "svg", "animation", "documentation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Documentation",
+    "Topic :: Terminals :: Terminal Emulators/X Terminals",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Paxton-Meny/PtyReel"
+Changelog = "https://github.com/Paxton-Meny/PtyReel/blob/main/CHANGELOG.md"
+
+[project.scripts]
+ptyreel = "ptyreel.__main__:cli"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
