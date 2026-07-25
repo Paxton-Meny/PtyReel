@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" preserveAspectRatio="xMidYMid meet" role="img">
+<title>fixture</title>
+<style>
+text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'DejaVu Sans Mono', Consolas, monospace;font-size:15px;fill:#e6edf3;white-space:pre}
+.c{opacity:0;animation-duration:1.800s;animation-timing-function:step-end;animation-iteration-count:infinite;animation-fill-mode:none}
+.s1{fill:#ff7b72}
+.s2{fill:#3fb950}
+.s3{fill:#58a6ff}
+.s4{fill:#ffa198}
+.s5{fill:#56d4dd}
+.s6{font-weight:700}
+.s7{font-style:italic}
+.s8{text-decoration:underline}
+.s9{fill:#8b949e}
+.s10{fill:#d29922;font-weight:700;text-decoration:underline}
+.r0{animation-name:r0}
+@keyframes r0{0%{opacity:0}22.2222%{opacity:1}}
+#cursor{fill:#58a6ff;animation:track 1.800s step-end infinite,blink 1.100s step-end infinite;animation-fill-mode:none,none}
+@keyframes track{0.0000%{transform:translate(0px,2px)}22.2222%{transform:translate(45px,26px)}}
+@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.c{opacity:1}}
+</style>
+<defs>
+<linearGradient id="backdrop" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#a8b8cc" stop-opacity="0.16"/>
+<stop offset="1" stop-color="#5b6c80" stop-opacity="0.09"/>
+</linearGradient>
+<filter id="lift" x="-12%" y="-10%" width="124%" height="130%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="8.872" result="wb"/>
+<feOffset in="wb" dy="7.985" result="wo"/>
+<feFlood flood-color="#010409" flood-opacity="0.42" result="wf"/>
+<feComposite in="wf" in2="wo" operator="in" result="ws"/>
+<feGaussianBlur in="SourceAlpha" stdDeviation="2.218" result="tb"/>
+<feOffset in="tb" dy="1.774" result="to"/>
+<feFlood flood-color="#010409" flood-opacity="0.30" result="tf"/>
+<feComposite in="tf" in2="to" operator="in" result="ts"/>
+<feMerge>
+<feMergeNode in="ws"/><feMergeNode in="ts"/><feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
+<clipPath id="window-clip">
+<rect x="27" y="26" width="346" height="248" rx="10" ry="10"/>
+</clipPath>
+<clipPath id="content-clip">
+<rect x="27" y="70" width="346" height="204"/>
+</clipPath>
+</defs>
+<rect x="0" y="0" width="400" height="300" rx="18" ry="18" fill="url(#backdrop)"/>
+<g filter="url(#lift)">
+<rect x="27" y="26" width="346" height="248" rx="10" ry="10" fill="#0d1117"/>
+<g clip-path="url(#window-clip)">
+<rect x="27" y="26" width="346" height="44" fill="#161b22"/>
+<line x1="27" y1="70.500" x2="373" y2="70.500" stroke="#30363d" stroke-opacity="0.8" stroke-width="1"/>
+<circle cx="51" cy="48" r="6" fill="#ff5f56" stroke="#000000" stroke-opacity="0.12"/>
+<circle cx="73" cy="48" r="6" fill="#ffbd2e" stroke="#000000" stroke-opacity="0.12"/>
+<circle cx="95" cy="48" r="6" fill="#27c93f" stroke="#000000" stroke-opacity="0.12"/>
+<text x="200.000" y="53" text-anchor="middle" font-family="&#39;Fira Code&#39;, &#39;JetBrains Mono&#39;, &#39;SF Mono&#39;, &#39;Cascadia Code&#39;, &#39;DejaVu Sans Mono&#39;, Consolas, monospace" font-size="13" letter-spacing="0.2" fill="#8b949e">fixture</text>
+<g clip-path="url(#content-clip)">
+<g id="scroll" transform="translate(51,94) translate(0,0)" xml:space="preserve">
+<text x="0" y="17"><tspan x="0" textLength="9" lengthAdjust="spacingAndGlyphs">0</tspan><tspan x="9" textLength="9" class="s1" lengthAdjust="spacingAndGlyphs">1</tspan><tspan x="18" textLength="9" class="s2" lengthAdjust="spacingAndGlyphs">2</tspan><tspan x="27" textLength="9" class="s3" lengthAdjust="spacingAndGlyphs">3</tspan><tspan x="36" textLength="9" class="s4" lengthAdjust="spacingAndGlyphs">4</tspan><tspan x="45" textLength="9" class="s5" lengthAdjust="spacingAndGlyphs">5</tspan><tspan x="54" textLength="9" class="s6" lengthAdjust="spacingAndGlyphs">6</tspan><tspan x="63" textLength="9" class="s7" lengthAdjust="spacingAndGlyphs">7</tspan><tspan x="72" textLength="9" class="s8" lengthAdjust="spacingAndGlyphs">8</tspan><tspan x="81" textLength="9" class="s9" lengthAdjust="spacingAndGlyphs">9</tspan></text>
+<text x="0" y="41"><tspan x="0" textLength="45" class="s10 c r0" lengthAdjust="spacingAndGlyphs">mixed</tspan></text>
+<rect id="cursor" x="0" y="0" width="9" height="19" rx="1.500" transform="translate(45,26)"/>
+</g>
+</g>
+</g>
+<rect x="27.500" y="26.500" width="345" height="247" rx="9.500" ry="9.500" fill="none" stroke="#30363d" stroke-width="1"/>
+<rect x="26.500" y="25.500" width="347" height="249" rx="10.500" ry="10.500" fill="none" stroke="#ffffff" stroke-opacity="0.04" stroke-width="1"/>
+</g>
+</svg>

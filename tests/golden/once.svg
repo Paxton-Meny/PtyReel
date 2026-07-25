@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" preserveAspectRatio="xMidYMid meet" role="img">
+<title>fixture</title>
+<style>
+text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'DejaVu Sans Mono', Consolas, monospace;font-size:15px;fill:#e6edf3;white-space:pre}
+.c{opacity:0;animation-duration:1.000s;animation-timing-function:step-end;animation-iteration-count:1;animation-fill-mode:forwards}
+.r0{animation-name:r0}
+@keyframes r0{0%{opacity:0}20.0000%{opacity:1}}
+.r1{animation-name:r1}
+@keyframes r1{0%{opacity:0}40.0000%{opacity:1}}
+.r2{animation-name:r2}
+@keyframes r2{0%{opacity:0}60.0000%{opacity:1}}
+#cursor{fill:#58a6ff;animation:track 1.000s step-end 1,blink 1.100s step-end infinite;animation-fill-mode:forwards,none}
+@keyframes track{0.0000%{transform:translate(0px,2px)}60.0000%{transform:translate(36px,2px)}}
+@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.c{opacity:1}}
+</style>
+<defs>
+<linearGradient id="backdrop" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#a8b8cc" stop-opacity="0.16"/>
+<stop offset="1" stop-color="#5b6c80" stop-opacity="0.09"/>
+</linearGradient>
+<filter id="lift" x="-12%" y="-10%" width="124%" height="130%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="8.872" result="wb"/>
+<feOffset in="wb" dy="7.985" result="wo"/>
+<feFlood flood-color="#010409" flood-opacity="0.42" result="wf"/>
+<feComposite in="wf" in2="wo" operator="in" result="ws"/>
+<feGaussianBlur in="SourceAlpha" stdDeviation="2.218" result="tb"/>
+<feOffset in="tb" dy="1.774" result="to"/>
+<feFlood flood-color="#010409" flood-opacity="0.30" result="tf"/>
+<feComposite in="tf" in2="to" operator="in" result="ts"/>
+<feMerge>
+<feMergeNode in="ws"/><feMergeNode in="ts"/><feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
+<clipPath id="window-clip">
+<rect x="27" y="26" width="346" height="248" rx="10" ry="10"/>
+</clipPath>
+<clipPath id="content-clip">
+<rect x="27" y="70" width="346" height="204"/>
+</clipPath>
+</defs>
+<rect x="0" y="0" width="400" height="300" rx="18" ry="18" fill="url(#backdrop)"/>
+<g filter="url(#lift)">
+<rect x="27" y="26" width="346" height="248" rx="10" ry="10" fill="#0d1117"/>
+<g clip-path="url(#window-clip)">
+<rect x="27" y="26" width="346" height="44" fill="#161b22"/>
+<line x1="27" y1="70.500" x2="373" y2="70.500" stroke="#30363d" stroke-opacity="0.8" stroke-width="1"/>
+<circle cx="51" cy="48" r="6" fill="#ff5f56" stroke="#000000" stroke-opacity="0.12"/>
+<circle cx="73" cy="48" r="6" fill="#ffbd2e" stroke="#000000" stroke-opacity="0.12"/>
+<circle cx="95" cy="48" r="6" fill="#27c93f" stroke="#000000" stroke-opacity="0.12"/>
+<text x="200.000" y="53" text-anchor="middle" font-family="&#39;Fira Code&#39;, &#39;JetBrains Mono&#39;, &#39;SF Mono&#39;, &#39;Cascadia Code&#39;, &#39;DejaVu Sans Mono&#39;, Consolas, monospace" font-size="13" letter-spacing="0.2" fill="#8b949e">fixture</text>
+<g clip-path="url(#content-clip)">
+<g id="scroll" transform="translate(51,94) translate(0,0)" xml:space="preserve">
+<text x="0" y="17"><tspan x="0" textLength="9" lengthAdjust="spacingAndGlyphs">$</tspan><tspan x="9" textLength="9" class="c r0" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="18" textLength="9" class="c r1" lengthAdjust="spacingAndGlyphs">h</tspan><tspan x="27" textLength="9" class="c r2" lengthAdjust="spacingAndGlyphs">i</tspan></text>
+<rect id="cursor" x="0" y="0" width="9" height="19" rx="1.500" transform="translate(36,2)"/>
+</g>
+</g>
+</g>
+<rect x="27.500" y="26.500" width="345" height="247" rx="9.500" ry="9.500" fill="none" stroke="#30363d" stroke-width="1"/>
+<rect x="26.500" y="25.500" width="347" height="249" rx="10.500" ry="10.500" fill="none" stroke="#ffffff" stroke-opacity="0.04" stroke-width="1"/>
+</g>
+</svg>
