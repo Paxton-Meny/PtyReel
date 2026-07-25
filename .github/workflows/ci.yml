@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the commit under test
+        shell: bash
+        env:
+          GH_REPOSITORY: ${{ github.repository }}
+          GH_SHA: ${{ github.sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init -q .
+          git -c protocol.version=2 \
+              -c 'credential.helper=!f() { printf "username=x-access-token\npassword=%s\n" "$GH_TOKEN"; }; f' \
+              fetch --no-tags --depth=1 "https://github.com/$GH_REPOSITORY" "$GH_SHA"
+          git checkout -q --detach FETCH_HEAD
+
+      - name: Verify the Python floor
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 --version
+          python3 -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)'
+
+      - name: Gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m compileall -q src tests
+          python3 -m unittest discover -s tests

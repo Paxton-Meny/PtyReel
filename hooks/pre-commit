@@ -1,0 +1,11 @@
+#!/bin/sh
+# Runs the quality gate before a commit is written. Reports only: nothing here
+# rewrites a file or stages anything. Activate once with
+#   git config core.hooksPath hooks
+set -eu
+
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+
+python3 -m compileall -q src tests
+python3 -m unittest discover -s tests
