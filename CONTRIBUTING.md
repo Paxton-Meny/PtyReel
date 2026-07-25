@@ -31,6 +31,48 @@ Enable the committed git hooks once per clone:
 git config core.hooksPath hooks
 ```
 
+The hooks run exactly the gate above. They report and never change a file.
+
+Tests that drive a pseudo-terminal skip themselves off POSIX, so a Windows
+machine runs most of the suite but not all of it. Run the gate under WSL before
+pushing.
+
+## Test layout
+
+`tests/support.py` puts `src` on the import path and holds the shared
+assertions. Every test module imports it before it imports anything from
+`ptyreel`. Two files are deliberately outside the discovery pattern and are
+never collected: `tests/fixtures.py`, which defines the recordings the renderer
+is tested against, and `tests/regenerate_golden.py`.
+
+`tests/test_standards.py` stands in for the linter and the type checker the
+gate does not have. It asserts the docstrings, the annotations, the absence of
+comments in the package, and the module shape.
+
+## Regenerating golden files
+
+The renderer is compared against stored documents in `tests/golden/`. After a
+deliberate change to the renderer:
+
+```bash
+python tests/regenerate_golden.py
+```
+
+Read the diff, then commit the goldens in the same commit as the change that
+caused them.
+
+## Rendering the demos
+
+`demos/out/` holds rendered output that the README links to. Refresh it by
+hand and commit the result:
+
+```bash
+python -m ptyreel demos/hello.tape demos/colors.tape demos/check.tape
+```
+
+Continuous integration never renders and never pushes. Rendering runs the
+commands in a tape, so a person decides when that happens.
+
 ## Maintainer conventions
 
 Documented so the history stays legible.
