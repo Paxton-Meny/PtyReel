@@ -1,0 +1,74 @@
+name: PtyReel
+description: Play a scripted terminal session and render it as an animated SVG.
+author: Paxton-Meny
+
+branding:
+  icon: film
+  color: blue
+
+inputs:
+  tape:
+    description: >-
+      Path to the .tape file, relative to the workspace. Must stay inside the
+      workspace and end in .tape.
+    required: true
+  output:
+    description: >-
+      Where to write the SVG, relative to the workspace. Overrides the tape's
+      own Output directive. Leave empty to use the tape's path.
+    required: false
+    default: ""
+  check:
+    description: >-
+      Set to true to validate the tape and stop. Nothing runs and nothing is
+      written. Useful as a fast gate on pull requests.
+    required: false
+    default: "false"
+  workspace:
+    description: >-
+      Directory every path must stay inside. Defaults to the checkout.
+    required: false
+    default: ""
+
+outputs:
+  svg-path:
+    description: >-
+      Workspace-relative path of the rendered SVG. Empty when check is true.
+    value: ${{ steps.ptyreel.outputs.svg-path }}
+
+runs:
+  using: composite
+  steps:
+    - id: ptyreel
+      shell: bash
+      env:
+        PTYREEL_ACTION_PATH: ${{ github.action_path }}
+        PTYREEL_TAPE: ${{ inputs.tape }}
+        PTYREEL_OUTPUT: ${{ inputs.output }}
+        PTYREEL_CHECK: ${{ inputs.check }}
+        PTYREEL_WORKSPACE: ${{ inputs.workspace }}
+      run: |
+        set -euo pipefail
+
+        if [ "$RUNNER_OS" = "Windows" ]; then
+          echo "PtyReel needs a POSIX runner: pty, termios and fcntl" >&2
+          exit 1
+        fi
+
+        python3 -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)' || {
+          echo "PtyReel needs Python 3.11 or newer, found $(python3 --version)" >&2
+          exit 1
+        }
+
+        workspace="${PTYREEL_WORKSPACE:-$GITHUB_WORKSPACE}"
+        args=(--workspace "$workspace")
+        if [ -n "$PTYREEL_OUTPUT" ]; then
+          args+=(--output "$PTYREEL_OUTPUT")
+        fi
+        if [ "$PTYREEL_CHECK" = "true" ]; then
+          args+=(--check)
+        fi
+
+        export PYTHONPATH="$PTYREEL_ACTION_PATH/src${PYTHONPATH:+:$PYTHONPATH}"
+        written=$(python3 -m ptyreel "${args[@]}" -- "$PTYREEL_TAPE")
+        printf 'svg-path=%s\n' "$written" >> "$GITHUB_OUTPUT"
