@@ -1,0 +1,350 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" preserveAspectRatio="xMidYMid meet" role="img">
+<title>colors</title>
+<style>
+text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'DejaVu Sans Mono', Consolas, monospace;font-size:15px;fill:#e6edf3;white-space:pre}
+.c,.v{opacity:0;animation-duration:11.795s;animation-timing-function:step-end;animation-iteration-count:infinite;animation-fill-mode:none}
+.s1{fill:#ff7b72}
+.s2{fill:#3fb950}
+.s3{fill:#d29922}
+.s4{fill:#58a6ff}
+.s5{font-weight:700}
+.s6{text-decoration:underline}
+.s7{fill:#6e7681}
+.s8{fill:#58a6ff;font-weight:700}
+.r0{animation-name:r0}
+@keyframes r0{0%{opacity:0}4.4086%{opacity:1}}
+.r1{animation-name:r1}
+@keyframes r1{0%{opacity:0}4.7478%{opacity:1}}
+.r2{animation-name:r2}
+@keyframes r2{0%{opacity:0}5.0869%{opacity:1}}
+.r3{animation-name:r3}
+@keyframes r3{0%{opacity:0}5.4260%{opacity:1}}
+.r4{animation-name:r4}
+@keyframes r4{0%{opacity:0}5.7652%{opacity:1}}
+.r5{animation-name:r5}
+@keyframes r5{0%{opacity:0}6.1043%{opacity:1}}
+.r6{animation-name:r6}
+@keyframes r6{0%{opacity:0}6.4434%{opacity:1}}
+.r7{animation-name:r7}
+@keyframes r7{0%{opacity:0}6.7825%{opacity:1}}
+.r8{animation-name:r8}
+@keyframes r8{0%{opacity:0}7.1217%{opacity:1}}
+.r9{animation-name:r9}
+@keyframes r9{0%{opacity:0}7.4608%{opacity:1}}
+.r10{animation-name:r10}
+@keyframes r10{0%{opacity:0}7.7999%{opacity:1}}
+.r11{animation-name:r11}
+@keyframes r11{0%{opacity:0}8.1390%{opacity:1}}
+.r12{animation-name:r12}
+@keyframes r12{0%{opacity:0}8.4782%{opacity:1}}
+.r13{animation-name:r13}
+@keyframes r13{0%{opacity:0}8.8173%{opacity:1}}
+.r14{animation-name:r14}
+@keyframes r14{0%{opacity:0}9.1564%{opacity:1}}
+.r15{animation-name:r15}
+@keyframes r15{0%{opacity:0}9.4955%{opacity:1}}
+.r16{animation-name:r16}
+@keyframes r16{0%{opacity:0}9.8347%{opacity:1}}
+.r17{animation-name:r17}
+@keyframes r17{0%{opacity:0}10.1738%{opacity:1}}
+.r18{animation-name:r18}
+@keyframes r18{0%{opacity:0}10.5129%{opacity:1}}
+.r19{animation-name:r19}
+@keyframes r19{0%{opacity:0}10.8521%{opacity:1}}
+.r20{animation-name:r20}
+@keyframes r20{0%{opacity:0}11.1912%{opacity:1}}
+.r21{animation-name:r21}
+@keyframes r21{0%{opacity:0}11.5303%{opacity:1}}
+.r22{animation-name:r22}
+@keyframes r22{0%{opacity:0}11.8694%{opacity:1}}
+.r23{animation-name:r23}
+@keyframes r23{0%{opacity:0}12.2086%{opacity:1}}
+.r24{animation-name:r24}
+@keyframes r24{0%{opacity:0}12.5477%{opacity:1}}
+.r25{animation-name:r25}
+@keyframes r25{0%{opacity:0}12.8868%{opacity:1}}
+.r26{animation-name:r26}
+@keyframes r26{0%{opacity:0}13.2259%{opacity:1}}
+.r27{animation-name:r27}
+@keyframes r27{0%{opacity:0}13.5651%{opacity:1}}
+.r28{animation-name:r28}
+@keyframes r28{0%{opacity:0}13.9042%{opacity:1}}
+.r29{animation-name:r29}
+@keyframes r29{0%{opacity:0}14.2433%{opacity:1}}
+.r30{animation-name:r30}
+@keyframes r30{0%{opacity:0}14.5825%{opacity:1}}
+.r31{animation-name:r31}
+@keyframes r31{0%{opacity:0}14.9216%{opacity:1}}
+.r32{animation-name:r32}
+@keyframes r32{0%{opacity:0}15.2607%{opacity:1}}
+.r33{animation-name:r33}
+@keyframes r33{0%{opacity:0}15.5998%{opacity:1}}
+.r34{animation-name:r34}
+@keyframes r34{0%{opacity:0}15.9390%{opacity:1}}
+.r35{animation-name:r35}
+@keyframes r35{0%{opacity:0}16.2781%{opacity:1}}
+.r36{animation-name:r36}
+@keyframes r36{0%{opacity:0}16.6172%{opacity:1}}
+.r37{animation-name:r37}
+@keyframes r37{0%{opacity:0}16.9563%{opacity:1}}
+.r38{animation-name:r38}
+@keyframes r38{0%{opacity:0}17.2955%{opacity:1}}
+.r39{animation-name:r39}
+@keyframes r39{0%{opacity:0}17.6346%{opacity:1}}
+.r40{animation-name:r40}
+@keyframes r40{0%{opacity:0}17.9737%{opacity:1}}
+.r41{animation-name:r41}
+@keyframes r41{0%{opacity:0}18.3128%{opacity:1}}
+.r42{animation-name:r42}
+@keyframes r42{0%{opacity:0}18.6520%{opacity:1}}
+.r43{animation-name:r43}
+@keyframes r43{0%{opacity:0}18.9911%{opacity:1}}
+.r44{animation-name:r44}
+@keyframes r44{0%{opacity:0}19.3302%{opacity:1}}
+.r45{animation-name:r45}
+@keyframes r45{0%{opacity:0}19.6694%{opacity:1}}
+.r46{animation-name:r46}
+@keyframes r46{0%{opacity:0}20.0085%{opacity:1}}
+.r47{animation-name:r47}
+@keyframes r47{0%{opacity:0}20.3476%{opacity:1}}
+.r48{animation-name:r48}
+@keyframes r48{0%{opacity:0}20.6867%{opacity:1}}
+.r49{animation-name:r49}
+@keyframes r49{0%{opacity:0}21.0259%{opacity:1}}
+.r50{animation-name:r50}
+@keyframes r50{0%{opacity:0}21.3650%{opacity:1}}
+.r51{animation-name:r51}
+@keyframes r51{0%{opacity:0}21.7041%{opacity:1}}
+.r52{animation-name:r52}
+@keyframes r52{0%{opacity:0}22.0432%{opacity:1}}
+.r53{animation-name:r53}
+@keyframes r53{0%{opacity:0}30.1823%{opacity:1}}
+.r54{animation-name:r54}
+@keyframes r54{0%{opacity:0}30.5214%{opacity:1}}
+.r55{animation-name:r55}
+@keyframes r55{0%{opacity:0}30.8605%{opacity:1}}
+.r56{animation-name:r56}
+@keyframes r56{0%{opacity:0}31.1997%{opacity:1}}
+.r57{animation-name:r57}
+@keyframes r57{0%{opacity:0}31.5388%{opacity:1}}
+.r58{animation-name:r58}
+@keyframes r58{0%{opacity:0}31.8779%{opacity:1}}
+.r59{animation-name:r59}
+@keyframes r59{0%{opacity:0}32.2170%{opacity:1}}
+.r60{animation-name:r60}
+@keyframes r60{0%{opacity:0}32.5562%{opacity:1}}
+.r61{animation-name:r61}
+@keyframes r61{0%{opacity:0}32.8953%{opacity:1}}
+.r62{animation-name:r62}
+@keyframes r62{0%{opacity:0}33.2344%{opacity:1}}
+.r63{animation-name:r63}
+@keyframes r63{0%{opacity:0}33.5735%{opacity:1}}
+.r64{animation-name:r64}
+@keyframes r64{0%{opacity:0}33.9127%{opacity:1}}
+.r65{animation-name:r65}
+@keyframes r65{0%{opacity:0}34.2518%{opacity:1}}
+.r66{animation-name:r66}
+@keyframes r66{0%{opacity:0}34.5909%{opacity:1}}
+.r67{animation-name:r67}
+@keyframes r67{0%{opacity:0}34.9301%{opacity:1}}
+.r68{animation-name:r68}
+@keyframes r68{0%{opacity:0}35.2692%{opacity:1}}
+.r69{animation-name:r69}
+@keyframes r69{0%{opacity:0}35.6083%{opacity:1}}
+.r70{animation-name:r70}
+@keyframes r70{0%{opacity:0}35.9474%{opacity:1}}
+.r71{animation-name:r71}
+@keyframes r71{0%{opacity:0}36.2866%{opacity:1}}
+.r72{animation-name:r72}
+@keyframes r72{0%{opacity:0}36.6257%{opacity:1}}
+.r73{animation-name:r73}
+@keyframes r73{0%{opacity:0}36.9648%{opacity:1}}
+.r74{animation-name:r74}
+@keyframes r74{0%{opacity:0}37.3039%{opacity:1}}
+.r75{animation-name:r75}
+@keyframes r75{0%{opacity:0}37.6431%{opacity:1}}
+.r76{animation-name:r76}
+@keyframes r76{0%{opacity:0}37.9822%{opacity:1}}
+.r77{animation-name:r77}
+@keyframes r77{0%{opacity:0}38.3213%{opacity:1}}
+.r78{animation-name:r78}
+@keyframes r78{0%{opacity:0}38.6604%{opacity:1}}
+.r79{animation-name:r79}
+@keyframes r79{0%{opacity:0}38.9996%{opacity:1}}
+.r80{animation-name:r80}
+@keyframes r80{0%{opacity:0}39.3387%{opacity:1}}
+.r81{animation-name:r81}
+@keyframes r81{0%{opacity:0}39.6778%{opacity:1}}
+.r82{animation-name:r82}
+@keyframes r82{0%{opacity:0}40.0170%{opacity:1}}
+.r83{animation-name:r83}
+@keyframes r83{0%{opacity:0}40.3561%{opacity:1}}
+.r84{animation-name:r84}
+@keyframes r84{0%{opacity:0}40.6952%{opacity:1}}
+.r85{animation-name:r85}
+@keyframes r85{0%{opacity:0}41.0343%{opacity:1}}
+.r86{animation-name:r86}
+@keyframes r86{0%{opacity:0}41.3735%{opacity:1}}
+.r87{animation-name:r87}
+@keyframes r87{0%{opacity:0}41.7126%{opacity:1}}
+.r88{animation-name:r88}
+@keyframes r88{0%{opacity:0}42.0517%{opacity:1}}
+.r89{animation-name:r89}
+@keyframes r89{0%{opacity:0}42.3908%{opacity:1}}
+.r90{animation-name:r90}
+@keyframes r90{0%{opacity:0}42.7300%{opacity:1}}
+.r91{animation-name:r91}
+@keyframes r91{0%{opacity:0}43.0691%{opacity:1}}
+.r92{animation-name:r92}
+@keyframes r92{0%{opacity:0}43.4082%{opacity:1}}
+.r93{animation-name:r93}
+@keyframes r93{0%{opacity:0}43.7474%{opacity:1}}
+.r94{animation-name:r94}
+@keyframes r94{0%{opacity:0}44.0865%{opacity:1}}
+.r95{animation-name:r95}
+@keyframes r95{0%{opacity:0}44.4256%{opacity:1}}
+.r96{animation-name:r96}
+@keyframes r96{0%{opacity:0}44.7647%{opacity:1}}
+.r97{animation-name:r97}
+@keyframes r97{0%{opacity:0}45.1039%{opacity:1}}
+.r98{animation-name:r98}
+@keyframes r98{0%{opacity:0}45.4430%{opacity:1}}
+.r99{animation-name:r99}
+@keyframes r99{0%{opacity:0}45.7821%{opacity:1}}
+.r100{animation-name:r100}
+@keyframes r100{0%{opacity:0}46.1212%{opacity:1}}
+.r101{animation-name:r101}
+@keyframes r101{0%{opacity:0}46.4604%{opacity:1}}
+.r102{animation-name:r102}
+@keyframes r102{0%{opacity:0}46.7995%{opacity:1}}
+.r103{animation-name:r103}
+@keyframes r103{0%{opacity:0}47.1386%{opacity:1}}
+.r104{animation-name:r104}
+@keyframes r104{0%{opacity:0}47.4777%{opacity:1}}
+.r105{animation-name:r105}
+@keyframes r105{0%{opacity:0}47.8169%{opacity:1}}
+.r106{animation-name:r106}
+@keyframes r106{0%{opacity:0}48.1560%{opacity:1}}
+.r107{animation-name:r107}
+@keyframes r107{0%{opacity:0}56.2950%{opacity:1}}
+.r108{animation-name:r108}
+@keyframes r108{0%{opacity:0}56.6342%{opacity:1}}
+.r109{animation-name:r109}
+@keyframes r109{0%{opacity:0}56.9733%{opacity:1}}
+.r110{animation-name:r110}
+@keyframes r110{0%{opacity:0}57.3124%{opacity:1}}
+.r111{animation-name:r111}
+@keyframes r111{0%{opacity:0}57.6515%{opacity:1}}
+.r112{animation-name:r112}
+@keyframes r112{0%{opacity:0}57.9907%{opacity:1}}
+.r113{animation-name:r113}
+@keyframes r113{0%{opacity:0}58.3298%{opacity:1}}
+.r114{animation-name:r114}
+@keyframes r114{0%{opacity:0}58.6689%{opacity:1}}
+.r115{animation-name:r115}
+@keyframes r115{0%{opacity:0}59.0081%{opacity:1}}
+.r116{animation-name:r116}
+@keyframes r116{0%{opacity:0}59.3472%{opacity:1}}
+.r117{animation-name:r117}
+@keyframes r117{0%{opacity:0}59.6863%{opacity:1}}
+.r118{animation-name:r118}
+@keyframes r118{0%{opacity:0}60.0254%{opacity:1}}
+.r119{animation-name:r119}
+@keyframes r119{0%{opacity:0}60.3646%{opacity:1}}
+.r120{animation-name:r120}
+@keyframes r120{0%{opacity:0}60.7037%{opacity:1}}
+.r121{animation-name:r121}
+@keyframes r121{0%{opacity:0}61.0428%{opacity:1}}
+.r122{animation-name:r122}
+@keyframes r122{0%{opacity:0}61.3819%{opacity:1}}
+.r123{animation-name:r123}
+@keyframes r123{0%{opacity:0}61.7211%{opacity:1}}
+.r124{animation-name:r124}
+@keyframes r124{0%{opacity:0}62.0602%{opacity:1}}
+.r125{animation-name:r125}
+@keyframes r125{0%{opacity:0}62.3993%{opacity:1}}
+.r126{animation-name:r126}
+@keyframes r126{0%{opacity:0}62.7384%{opacity:1}}
+.r127{animation-name:r127}
+@keyframes r127{0%{opacity:0}63.0776%{opacity:1}}
+.r128{animation-name:r128}
+@keyframes r128{0%{opacity:0}63.4167%{opacity:1}}
+.r129{animation-name:r129}
+@keyframes r129{0%{opacity:0}63.7558%{opacity:1}}
+.r130{animation-name:r130}
+@keyframes r130{0%{opacity:0}64.0950%{opacity:1}}
+.r131{animation-name:r131}
+@keyframes r131{0%{opacity:0}64.4341%{opacity:1}}
+.r132{animation-name:r132}
+@keyframes r132{0%{opacity:0}64.7732%{opacity:1}}
+.r133{animation-name:r133}
+@keyframes r133{0%{opacity:0}65.1123%{opacity:1}}
+.r134{animation-name:r134}
+@keyframes r134{0%{opacity:0}65.4515%{opacity:1}}
+.r135{animation-name:r135}
+@keyframes r135{0%{opacity:0}65.7906%{opacity:1}}
+.w0{animation-name:w0}
+@keyframes w0{0%{opacity:0}22.0432%{opacity:1}}
+.w1{animation-name:w1}
+@keyframes w1{0%{opacity:0}48.1560%{opacity:1}}
+.w2{animation-name:w2}
+@keyframes w2{0%{opacity:0}65.7906%{opacity:1}}
+#cursor{fill:#58a6ff;animation:track 11.795s step-end infinite,blink 1.100s step-end infinite;animation-fill-mode:none,none}
+@keyframes track{0.0000%{transform:translate(18px,2px)}4.5358%{transform:translate(27px,2px)}4.8326%{transform:translate(36px,2px)}5.1293%{transform:translate(45px,2px)}5.4260%{transform:translate(54px,2px)}5.7228%{transform:translate(63px,2px)}6.0195%{transform:translate(72px,2px)}6.3162%{transform:translate(81px,2px)}6.6130%{transform:translate(90px,2px)}6.9097%{transform:translate(99px,2px)}7.2064%{transform:translate(108px,2px)}7.5032%{transform:translate(117px,2px)}7.7999%{transform:translate(126px,2px)}8.0967%{transform:translate(135px,2px)}8.3934%{transform:translate(144px,2px)}8.6901%{transform:translate(153px,2px)}8.9869%{transform:translate(162px,2px)}9.2836%{transform:translate(171px,2px)}9.5803%{transform:translate(180px,2px)}9.8771%{transform:translate(189px,2px)}10.1738%{transform:translate(198px,2px)}10.4705%{transform:translate(207px,2px)}10.7673%{transform:translate(216px,2px)}11.0640%{transform:translate(225px,2px)}11.3607%{transform:translate(234px,2px)}11.6575%{transform:translate(243px,2px)}11.9542%{transform:translate(252px,2px)}12.2510%{transform:translate(261px,2px)}12.5477%{transform:translate(270px,2px)}12.8444%{transform:translate(279px,2px)}13.1412%{transform:translate(288px,2px)}13.4379%{transform:translate(297px,2px)}13.7346%{transform:translate(306px,2px)}14.0314%{transform:translate(315px,2px)}14.3281%{transform:translate(324px,2px)}14.6248%{transform:translate(333px,2px)}14.9216%{transform:translate(342px,2px)}15.2183%{transform:translate(351px,2px)}15.5150%{transform:translate(360px,2px)}15.8118%{transform:translate(369px,2px)}16.1085%{transform:translate(378px,2px)}16.4053%{transform:translate(387px,2px)}16.7020%{transform:translate(396px,2px)}16.9987%{transform:translate(405px,2px)}17.2955%{transform:translate(414px,2px)}17.5922%{transform:translate(423px,2px)}17.8889%{transform:translate(432px,2px)}18.1857%{transform:translate(441px,2px)}18.4824%{transform:translate(450px,2px)}18.7791%{transform:translate(459px,2px)}19.0759%{transform:translate(468px,2px)}19.3726%{transform:translate(477px,2px)}19.6694%{transform:translate(486px,2px)}19.9661%{transform:translate(495px,2px)}20.2628%{transform:translate(504px,2px)}20.5596%{transform:translate(513px,2px)}20.8563%{transform:translate(522px,2px)}21.1530%{transform:translate(531px,2px)}21.4498%{transform:translate(540px,2px)}21.7465%{transform:translate(549px,2px)}22.0432%{transform:translate(558px,2px)}22.3400%{transform:translate(18px,50px)}30.2671%{transform:translate(27px,50px)}30.5638%{transform:translate(36px,50px)}30.8605%{transform:translate(45px,50px)}31.1573%{transform:translate(54px,50px)}31.4540%{transform:translate(63px,50px)}31.7507%{transform:translate(72px,50px)}32.0475%{transform:translate(81px,50px)}32.3442%{transform:translate(90px,50px)}32.6409%{transform:translate(99px,50px)}32.9377%{transform:translate(108px,50px)}33.2344%{transform:translate(117px,50px)}33.5312%{transform:translate(126px,50px)}33.8279%{transform:translate(135px,50px)}34.1246%{transform:translate(144px,50px)}34.4214%{transform:translate(153px,50px)}34.7181%{transform:translate(162px,50px)}35.0148%{transform:translate(171px,50px)}35.3116%{transform:translate(180px,50px)}35.6083%{transform:translate(189px,50px)}35.9050%{transform:translate(198px,50px)}36.2018%{transform:translate(207px,50px)}36.4985%{transform:translate(216px,50px)}36.7953%{transform:translate(225px,50px)}37.0920%{transform:translate(234px,50px)}37.3887%{transform:translate(243px,50px)}37.6855%{transform:translate(252px,50px)}37.9822%{transform:translate(261px,50px)}38.2789%{transform:translate(270px,50px)}38.5757%{transform:translate(279px,50px)}38.8724%{transform:translate(288px,50px)}39.1691%{transform:translate(297px,50px)}39.4659%{transform:translate(306px,50px)}39.7626%{transform:translate(315px,50px)}40.0593%{transform:translate(324px,50px)}40.3561%{transform:translate(333px,50px)}40.6528%{transform:translate(342px,50px)}40.9496%{transform:translate(351px,50px)}41.2463%{transform:translate(360px,50px)}41.5430%{transform:translate(369px,50px)}41.8398%{transform:translate(378px,50px)}42.1365%{transform:translate(387px,50px)}42.4332%{transform:translate(396px,50px)}42.7300%{transform:translate(405px,50px)}43.0267%{transform:translate(414px,50px)}43.3234%{transform:translate(423px,50px)}43.6202%{transform:translate(432px,50px)}43.9169%{transform:translate(441px,50px)}44.2136%{transform:translate(450px,50px)}44.5104%{transform:translate(459px,50px)}44.8071%{transform:translate(468px,50px)}45.1039%{transform:translate(477px,50px)}45.4006%{transform:translate(486px,50px)}45.6973%{transform:translate(495px,50px)}45.9941%{transform:translate(504px,50px)}46.2908%{transform:translate(513px,50px)}46.5875%{transform:translate(522px,50px)}46.8843%{transform:translate(531px,50px)}47.1810%{transform:translate(540px,50px)}47.4777%{transform:translate(549px,50px)}47.7745%{transform:translate(558px,50px)}48.0712%{transform:translate(567px,50px)}48.3680%{transform:translate(18px,98px)}56.2950%{transform:translate(27px,98px)}56.5918%{transform:translate(36px,98px)}56.8885%{transform:translate(45px,98px)}57.1852%{transform:translate(54px,98px)}57.4820%{transform:translate(63px,98px)}57.7787%{transform:translate(72px,98px)}58.0755%{transform:translate(81px,98px)}58.3722%{transform:translate(90px,98px)}58.6689%{transform:translate(99px,98px)}58.9657%{transform:translate(108px,98px)}59.2624%{transform:translate(117px,98px)}59.5591%{transform:translate(126px,98px)}59.8559%{transform:translate(135px,98px)}60.1526%{transform:translate(144px,98px)}60.4493%{transform:translate(153px,98px)}60.7461%{transform:translate(162px,98px)}61.0428%{transform:translate(171px,98px)}61.3396%{transform:translate(180px,98px)}61.6363%{transform:translate(189px,98px)}61.9330%{transform:translate(198px,98px)}62.2298%{transform:translate(207px,98px)}62.5265%{transform:translate(216px,98px)}62.8232%{transform:translate(225px,98px)}63.1200%{transform:translate(234px,98px)}63.4167%{transform:translate(243px,98px)}63.7134%{transform:translate(252px,98px)}64.0102%{transform:translate(261px,98px)}64.3069%{transform:translate(270px,98px)}64.6036%{transform:translate(279px,98px)}64.9004%{transform:translate(288px,98px)}65.1971%{transform:translate(297px,98px)}65.4939%{transform:translate(306px,98px)}65.7906%{transform:translate(315px,98px)}66.0873%{transform:translate(18px,194px)}}
+@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.c{opacity:1}}
+</style>
+<defs>
+<linearGradient id="backdrop" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#a8b8cc" stop-opacity="0.16"/>
+<stop offset="1" stop-color="#5b6c80" stop-opacity="0.09"/>
+</linearGradient>
+<filter id="lift" x="-12%" y="-10%" width="124%" height="130%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="20.000" result="wb"/>
+<feOffset in="wb" dy="18.000" result="wo"/>
+<feFlood flood-color="#010409" flood-opacity="0.42" result="wf"/>
+<feComposite in="wf" in2="wo" operator="in" result="ws"/>
+<feGaussianBlur in="SourceAlpha" stdDeviation="5.000" result="tb"/>
+<feOffset in="tb" dy="4.000" result="to"/>
+<feFlood flood-color="#010409" flood-opacity="0.30" result="tf"/>
+<feComposite in="tf" in2="to" operator="in" result="ts"/>
+<feMerge>
+<feMergeNode in="ws"/><feMergeNode in="ts"/><feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
+<clipPath id="window-clip">
+<rect x="60" y="37" width="780" height="346" rx="10" ry="10"/>
+</clipPath>
+<clipPath id="content-clip">
+<rect x="60" y="81" width="780" height="302"/>
+</clipPath>
+</defs>
+<rect x="0" y="0" width="900" height="420" rx="18" ry="18" fill="url(#backdrop)"/>
+<g filter="url(#lift)">
+<rect x="60" y="37" width="780" height="346" rx="10" ry="10" fill="#0d1117"/>
+<g clip-path="url(#window-clip)">
+<rect x="60" y="37" width="780" height="44" fill="#161b22"/>
+<line x1="60" y1="81.500" x2="840" y2="81.500" stroke="#30363d" stroke-opacity="0.8" stroke-width="1"/>
+<circle cx="84" cy="59" r="6" fill="#ff5f56" stroke="#000000" stroke-opacity="0.12"/>
+<circle cx="106" cy="59" r="6" fill="#ffbd2e" stroke="#000000" stroke-opacity="0.12"/>
+<circle cx="128" cy="59" r="6" fill="#27c93f" stroke="#000000" stroke-opacity="0.12"/>
+<text x="450.000" y="64" text-anchor="middle" font-family="&#39;Fira Code&#39;, &#39;JetBrains Mono&#39;, &#39;SF Mono&#39;, &#39;Cascadia Code&#39;, &#39;DejaVu Sans Mono&#39;, Consolas, monospace" font-size="13" letter-spacing="0.2" fill="#8b949e">colors</text>
+<g clip-path="url(#content-clip)">
+<g id="scroll" transform="translate(84,105) translate(0,0)" xml:space="preserve">
+<text x="0" y="17"><tspan x="0" textLength="18" lengthAdjust="spacingAndGlyphs">$ </tspan><tspan x="18" textLength="9" class="c r0" lengthAdjust="spacingAndGlyphs">p</tspan><tspan x="27" textLength="9" class="c r1" lengthAdjust="spacingAndGlyphs">r</tspan><tspan x="36" textLength="9" class="c r2" lengthAdjust="spacingAndGlyphs">i</tspan><tspan x="45" textLength="18" class="c r3" lengthAdjust="spacingAndGlyphs">nt</tspan><tspan x="63" textLength="9" class="c r4" lengthAdjust="spacingAndGlyphs">f</tspan><tspan x="72" textLength="9" class="c r5" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="81" textLength="9" class="c r6" lengthAdjust="spacingAndGlyphs">'</tspan><tspan x="90" textLength="9" class="c r7" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="99" textLength="9" class="c r8" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="108" textLength="9" class="c r9" lengthAdjust="spacingAndGlyphs">[</tspan><tspan x="117" textLength="18" class="c r10" lengthAdjust="spacingAndGlyphs">31</tspan><tspan x="135" textLength="9" class="c r11" lengthAdjust="spacingAndGlyphs">m</tspan><tspan x="144" textLength="9" class="c r12" lengthAdjust="spacingAndGlyphs">r</tspan><tspan x="153" textLength="9" class="c r13" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="162" textLength="9" class="c r14" lengthAdjust="spacingAndGlyphs">d</tspan><tspan x="171" textLength="9" class="c r15" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="180" textLength="9" class="c r16" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="189" textLength="18" class="c r17" lengthAdjust="spacingAndGlyphs">e[</tspan><tspan x="207" textLength="9" class="c r18" lengthAdjust="spacingAndGlyphs">3</tspan><tspan x="216" textLength="9" class="c r19" lengthAdjust="spacingAndGlyphs">2</tspan><tspan x="225" textLength="9" class="c r20" lengthAdjust="spacingAndGlyphs">m</tspan><tspan x="234" textLength="9" class="c r21" lengthAdjust="spacingAndGlyphs">g</tspan><tspan x="243" textLength="9" class="c r22" lengthAdjust="spacingAndGlyphs">r</tspan><tspan x="252" textLength="9" class="c r23" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="261" textLength="18" class="c r24" lengthAdjust="spacingAndGlyphs">en</tspan><tspan x="279" textLength="9" class="c r25" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="288" textLength="9" class="c r26" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="297" textLength="9" class="c r27" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="306" textLength="9" class="c r28" lengthAdjust="spacingAndGlyphs">[</tspan><tspan x="315" textLength="9" class="c r29" lengthAdjust="spacingAndGlyphs">3</tspan><tspan x="324" textLength="9" class="c r30" lengthAdjust="spacingAndGlyphs">3</tspan><tspan x="333" textLength="18" class="c r31" lengthAdjust="spacingAndGlyphs">my</tspan><tspan x="351" textLength="9" class="c r32" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="360" textLength="9" class="c r33" lengthAdjust="spacingAndGlyphs">l</tspan><tspan x="369" textLength="9" class="c r34" lengthAdjust="spacingAndGlyphs">l</tspan><tspan x="378" textLength="9" class="c r35" lengthAdjust="spacingAndGlyphs">o</tspan><tspan x="387" textLength="9" class="c r36" lengthAdjust="spacingAndGlyphs">w</tspan><tspan x="396" textLength="9" class="c r37" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="405" textLength="18" class="c r38" lengthAdjust="spacingAndGlyphs">\e</tspan><tspan x="423" textLength="9" class="c r39" lengthAdjust="spacingAndGlyphs">[</tspan><tspan x="432" textLength="9" class="c r40" lengthAdjust="spacingAndGlyphs">3</tspan><tspan x="441" textLength="9" class="c r41" lengthAdjust="spacingAndGlyphs">4</tspan><tspan x="450" textLength="9" class="c r42" lengthAdjust="spacingAndGlyphs">m</tspan><tspan x="459" textLength="9" class="c r43" lengthAdjust="spacingAndGlyphs">b</tspan><tspan x="468" textLength="9" class="c r44" lengthAdjust="spacingAndGlyphs">l</tspan><tspan x="477" textLength="18" class="c r45" lengthAdjust="spacingAndGlyphs">ue</tspan><tspan x="495" textLength="9" class="c r46" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="504" textLength="9" class="c r47" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="513" textLength="9" class="c r48" lengthAdjust="spacingAndGlyphs">[</tspan><tspan x="522" textLength="9" class="c r49" lengthAdjust="spacingAndGlyphs">0</tspan><tspan x="531" textLength="9" class="c r50" lengthAdjust="spacingAndGlyphs">m</tspan><tspan x="540" textLength="9" class="c r51" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="549" textLength="18" class="c r52" lengthAdjust="spacingAndGlyphs">n'</tspan></text>
+<text x="0" y="41" class="v w0"><tspan x="0" textLength="36" class="s1 c r52" lengthAdjust="spacingAndGlyphs">red </tspan><tspan x="36" textLength="54" class="s2 c r52" lengthAdjust="spacingAndGlyphs">green </tspan><tspan x="90" textLength="63" class="s3 c r52" lengthAdjust="spacingAndGlyphs">yellow </tspan><tspan x="153" textLength="36" class="s4 c r52" lengthAdjust="spacingAndGlyphs">blue</tspan></text>
+<text x="0" y="65" class="v w0"><tspan x="0" textLength="18" class="c r52" lengthAdjust="spacingAndGlyphs">$ </tspan><tspan x="18" textLength="9" class="c r53" lengthAdjust="spacingAndGlyphs">p</tspan><tspan x="27" textLength="9" class="c r54" lengthAdjust="spacingAndGlyphs">r</tspan><tspan x="36" textLength="18" class="c r55" lengthAdjust="spacingAndGlyphs">in</tspan><tspan x="54" textLength="9" class="c r56" lengthAdjust="spacingAndGlyphs">t</tspan><tspan x="63" textLength="9" class="c r57" lengthAdjust="spacingAndGlyphs">f</tspan><tspan x="72" textLength="9" class="c r58" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="81" textLength="9" class="c r59" lengthAdjust="spacingAndGlyphs">'</tspan><tspan x="90" textLength="9" class="c r60" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="99" textLength="9" class="c r61" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="108" textLength="18" class="c r62" lengthAdjust="spacingAndGlyphs">[1</tspan><tspan x="126" textLength="9" class="c r63" lengthAdjust="spacingAndGlyphs">m</tspan><tspan x="135" textLength="9" class="c r64" lengthAdjust="spacingAndGlyphs">b</tspan><tspan x="144" textLength="9" class="c r65" lengthAdjust="spacingAndGlyphs">o</tspan><tspan x="153" textLength="9" class="c r66" lengthAdjust="spacingAndGlyphs">l</tspan><tspan x="162" textLength="9" class="c r67" lengthAdjust="spacingAndGlyphs">d</tspan><tspan x="171" textLength="9" class="c r68" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="180" textLength="18" class="c r69" lengthAdjust="spacingAndGlyphs">e[</tspan><tspan x="198" textLength="9" class="c r70" lengthAdjust="spacingAndGlyphs">0</tspan><tspan x="207" textLength="9" class="c r71" lengthAdjust="spacingAndGlyphs">m</tspan><tspan x="216" textLength="9" class="c r72" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="225" textLength="9" class="c r73" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="234" textLength="9" class="c r74" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="243" textLength="9" class="c r75" lengthAdjust="spacingAndGlyphs">[</tspan><tspan x="252" textLength="18" class="c r76" lengthAdjust="spacingAndGlyphs">4m</tspan><tspan x="270" textLength="9" class="c r77" lengthAdjust="spacingAndGlyphs">u</tspan><tspan x="279" textLength="9" class="c r78" lengthAdjust="spacingAndGlyphs">n</tspan><tspan x="288" textLength="9" class="c r79" lengthAdjust="spacingAndGlyphs">d</tspan><tspan x="297" textLength="9" class="c r80" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="306" textLength="9" class="c r81" lengthAdjust="spacingAndGlyphs">r</tspan><tspan x="315" textLength="9" class="c r82" lengthAdjust="spacingAndGlyphs">l</tspan><tspan x="324" textLength="18" class="c r83" lengthAdjust="spacingAndGlyphs">in</tspan><tspan x="342" textLength="9" class="c r84" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="351" textLength="9" class="c r85" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="360" textLength="9" class="c r86" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="369" textLength="9" class="c r87" lengthAdjust="spacingAndGlyphs">[</tspan><tspan x="378" textLength="9" class="c r88" lengthAdjust="spacingAndGlyphs">0</tspan><tspan x="387" textLength="9" class="c r89" lengthAdjust="spacingAndGlyphs">m</tspan><tspan x="396" textLength="18" class="c r90" lengthAdjust="spacingAndGlyphs"> \</tspan><tspan x="414" textLength="9" class="c r91" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="423" textLength="9" class="c r92" lengthAdjust="spacingAndGlyphs">[</tspan><tspan x="432" textLength="9" class="c r93" lengthAdjust="spacingAndGlyphs">9</tspan><tspan x="441" textLength="9" class="c r94" lengthAdjust="spacingAndGlyphs">0</tspan><tspan x="450" textLength="9" class="c r95" lengthAdjust="spacingAndGlyphs">m</tspan><tspan x="459" textLength="9" class="c r96" lengthAdjust="spacingAndGlyphs">f</tspan><tspan x="468" textLength="18" class="c r97" lengthAdjust="spacingAndGlyphs">ai</tspan><tspan x="486" textLength="9" class="c r98" lengthAdjust="spacingAndGlyphs">n</tspan><tspan x="495" textLength="9" class="c r99" lengthAdjust="spacingAndGlyphs">t</tspan><tspan x="504" textLength="9" class="c r100" lengthAdjust="spacingAndGlyphs">\</tspan><tspan x="513" textLength="9" class="c r101" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="522" textLength="9" class="c r102" lengthAdjust="spacingAndGlyphs">[</tspan><tspan x="531" textLength="9" class="c r103" lengthAdjust="spacingAndGlyphs">0</tspan><tspan x="540" textLength="18" class="c r104" lengthAdjust="spacingAndGlyphs">m\</tspan><tspan x="558" textLength="9" class="c r105" lengthAdjust="spacingAndGlyphs">n</tspan><tspan x="567" textLength="9" class="c r106" lengthAdjust="spacingAndGlyphs">'</tspan></text>
+<text x="0" y="89" class="v w1"><tspan x="0" textLength="36" class="s5 c r106" lengthAdjust="spacingAndGlyphs">bold</tspan><tspan x="36" textLength="9" class="c r106" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="45" textLength="81" class="s6 c r106" lengthAdjust="spacingAndGlyphs">underline</tspan><tspan x="126" textLength="9" class="c r106" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="135" textLength="45" class="s7 c r106" lengthAdjust="spacingAndGlyphs">faint</tspan></text>
+<text x="0" y="113" class="v w1"><tspan x="0" textLength="18" class="c r106" lengthAdjust="spacingAndGlyphs">$ </tspan><tspan x="18" textLength="18" class="c r107" lengthAdjust="spacingAndGlyphs">ls</tspan><tspan x="36" textLength="9" class="c r108" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="45" textLength="9" class="c r109" lengthAdjust="spacingAndGlyphs">-</tspan><tspan x="54" textLength="9" class="c r110" lengthAdjust="spacingAndGlyphs">-</tspan><tspan x="63" textLength="9" class="c r111" lengthAdjust="spacingAndGlyphs">c</tspan><tspan x="72" textLength="9" class="c r112" lengthAdjust="spacingAndGlyphs">o</tspan><tspan x="81" textLength="9" class="c r113" lengthAdjust="spacingAndGlyphs">l</tspan><tspan x="90" textLength="18" class="c r114" lengthAdjust="spacingAndGlyphs">or</tspan><tspan x="108" textLength="9" class="c r115" lengthAdjust="spacingAndGlyphs">=</tspan><tspan x="117" textLength="9" class="c r116" lengthAdjust="spacingAndGlyphs">a</tspan><tspan x="126" textLength="9" class="c r117" lengthAdjust="spacingAndGlyphs">l</tspan><tspan x="135" textLength="9" class="c r118" lengthAdjust="spacingAndGlyphs">w</tspan><tspan x="144" textLength="9" class="c r119" lengthAdjust="spacingAndGlyphs">a</tspan><tspan x="153" textLength="9" class="c r120" lengthAdjust="spacingAndGlyphs">y</tspan><tspan x="162" textLength="18" class="c r121" lengthAdjust="spacingAndGlyphs">s </tspan><tspan x="180" textLength="9" class="c r122" lengthAdjust="spacingAndGlyphs">/</tspan><tspan x="189" textLength="9" class="c r123" lengthAdjust="spacingAndGlyphs">u</tspan><tspan x="198" textLength="9" class="c r124" lengthAdjust="spacingAndGlyphs">s</tspan><tspan x="207" textLength="9" class="c r125" lengthAdjust="spacingAndGlyphs">r</tspan><tspan x="216" textLength="9" class="c r126" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="225" textLength="9" class="c r127" lengthAdjust="spacingAndGlyphs">|</tspan><tspan x="234" textLength="18" class="c r128" lengthAdjust="spacingAndGlyphs"> h</tspan><tspan x="252" textLength="9" class="c r129" lengthAdjust="spacingAndGlyphs">e</tspan><tspan x="261" textLength="9" class="c r130" lengthAdjust="spacingAndGlyphs">a</tspan><tspan x="270" textLength="9" class="c r131" lengthAdjust="spacingAndGlyphs">d</tspan><tspan x="279" textLength="9" class="c r132" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="288" textLength="9" class="c r133" lengthAdjust="spacingAndGlyphs">-</tspan><tspan x="297" textLength="9" class="c r134" lengthAdjust="spacingAndGlyphs">n</tspan><tspan x="306" textLength="18" class="c r135" lengthAdjust="spacingAndGlyphs"> 3</tspan></text>
+<text x="0" y="137" class="v w2"><tspan x="0" textLength="27" class="s8 c r135" lengthAdjust="spacingAndGlyphs">bin</tspan></text>
+<text x="0" y="161" class="v w2"><tspan x="0" textLength="45" class="s8 c r135" lengthAdjust="spacingAndGlyphs">games</tspan></text>
+<text x="0" y="185" class="v w2"><tspan x="0" textLength="63" class="s8 c r135" lengthAdjust="spacingAndGlyphs">include</tspan></text>
+<text x="0" y="209" class="v w2"><tspan x="0" textLength="18" class="c r135" lengthAdjust="spacingAndGlyphs">$ </tspan></text>
+<rect id="cursor" x="0" y="0" width="9" height="19" rx="1.500" transform="translate(18,194)"/>
+</g>
+</g>
+</g>
+<rect x="60.500" y="37.500" width="779" height="345" rx="9.500" ry="9.500" fill="none" stroke="#30363d" stroke-width="1"/>
+<rect x="59.500" y="36.500" width="781" height="347" rx="10.500" ry="10.500" fill="none" stroke="#ffffff" stroke-opacity="0.04" stroke-width="1"/>
+</g>
+</svg>
