@@ -8,6 +8,7 @@ that is easy to break by accident and expensive to notice late.
 from __future__ import annotations
 
 import re
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -155,6 +156,32 @@ class HookTest(PtyReelTestCase):
             text = (HOOKS / name).read_text(encoding="utf-8")
             for forbidden in ("git add", "git commit", "git push", "--fix"):
                 self.assertNotIn(forbidden, text, f"hooks/{name} changes things")
+
+    def test_hooks_are_executable(self) -> None:
+        """A hook git cannot run is a hook that silently does nothing.
+
+        The mode that matters is the one recorded in the index, not the one
+        on disk, because a checkout on a filesystem without permission bits
+        takes its mode from there.
+        """
+        try:
+            listing = subprocess.run(
+                ["git", "ls-files", "--stage", "--", "hooks"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=30,
+            ).stdout
+        except (OSError, subprocess.SubprocessError):
+            self.skipTest("git is not available here")
+        if not listing.strip():
+            self.skipTest("hooks are not tracked in this checkout")
+        for line in listing.splitlines():
+            mode = line.split(" ", 1)[0]
+            path = line.split("\t", 1)[-1]
+            with self.subTest(path=path):
+                self.assertEqual(mode, "100755", f"{path} is not executable")
 
 
 class ProseTest(PtyReelTestCase):
