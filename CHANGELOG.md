@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-25
+
+First tagged release. The tape format and the rendered output may still change
+in any 0.x release.
+
 ### Added
 
 - Tape format: `Output`, `Require`, eleven `Set` keys, `Type`, named keys,

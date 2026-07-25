@@ -17,8 +17,9 @@ with CSS alone, so it plays inside a README where scripts never run.
 
 ## Status
 
-Early development. The tape format and the rendered output are not stable yet,
-and there is no tagged release. Read the changelog before upgrading.
+Early development, released as `v0.1.0`. The tape format and the rendered
+output may change in any 0.x release, so pin a full version if that matters to
+you and read the changelog before upgrading.
 
 ## Requirements
 
