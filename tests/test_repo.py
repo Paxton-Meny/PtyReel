@@ -148,9 +148,17 @@ class WorkflowTest(PtyReelTestCase):
 
     def test_hardening(self) -> None:
         """Read-only, time-bounded, and superseded by a newer run."""
-        text = (WORKFLOWS / "ci.yml").read_text(encoding="utf-8")
-        for needle in ("permissions: {}", "contents: read", "timeout-minutes:", "cancel-in-progress: true"):
-            self.assertIn(needle, text)
+        needles = (
+            "permissions: {}",
+            "contents: read",
+            "timeout-minutes:",
+            "cancel-in-progress: true",
+        )
+        for path in self.workflows():
+            text = path.read_text(encoding="utf-8")
+            for needle in needles:
+                with self.subTest(path=path.name, needle=needle):
+                    self.assertIn(needle, text, f"{path.name} is missing {needle}")
 
     def test_runs_exactly_the_gate(self) -> None:
         """The workflow has no checks of its own."""
