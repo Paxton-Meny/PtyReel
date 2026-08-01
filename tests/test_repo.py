@@ -21,6 +21,7 @@ WORKFLOWS = REPO_ROOT / ".github" / "workflows"
 HOOKS = REPO_ROOT / "hooks"
 DEMOS = REPO_ROOT / "demos"
 GATE_STEPS = ("-m compileall -q src tests", "-m unittest discover -s tests")
+LOCAL_ACTION = "uses: ./"
 BANNED_WORDS = (
     "delve",
     "leverage",
@@ -98,14 +99,51 @@ class WorkflowTest(PtyReelTestCase):
         """There is at least one, and it is the gate."""
         self.assertTrue(self.workflows())
 
-    def test_no_third_party_actions(self) -> None:
-        """Checkout is done with git, so no action is trusted."""
+    def test_only_the_local_action_is_used(self) -> None:
+        """No outside code runs here.
+
+        A workflow may reference this repository's own action, which is the
+        same code the gate already covers. Everything else is a ``run:`` step
+        written for this repository, so nothing third party is trusted, and
+        nothing GitHub-owned either.
+        """
         for path in self.workflows():
             for number, line in enumerate(
                 path.read_text(encoding="utf-8").splitlines(), start=1
             ):
-                self.assertFalse(
-                    line.strip().startswith("uses:"), f"{path.name}:{number}: uses: step"
+                stripped = line.strip()
+                if not stripped.startswith("uses:"):
+                    continue
+                self.assertEqual(
+                    stripped,
+                    LOCAL_ACTION,
+                    f"{path.name}:{number}: only {LOCAL_ACTION!r} is allowed",
+                )
+
+    def test_no_workflow_causes_another_run(self) -> None:
+        """A workflow that raised an event could retrigger itself.
+
+        Pushing with the workflow token happens not to start a new run, but
+        relying on that is relying on a detail rather than on a rule. The rule
+        is that a workflow raises no events at all.
+        """
+        forbidden = ("git push", "git tag", "gh workflow run", "gh release create")
+        for path in self.workflows():
+            text = path.read_text(encoding="utf-8")
+            for phrase in forbidden:
+                with self.subTest(path=path.name, phrase=phrase):
+                    self.assertNotIn(phrase, text, f"{path.name} could retrigger a run")
+
+    def test_no_workflow_reads_a_secret(self) -> None:
+        """A fork's code must never reach a privileged context."""
+        for path in self.workflows():
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertNotIn("secrets.", text, f"{path.name} reads a secret")
+                self.assertNotIn(
+                    "pull_request_target",
+                    text,
+                    f"{path.name} runs fork code with the base repository's rights",
                 )
 
     def test_hardening(self) -> None:
