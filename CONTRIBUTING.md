@@ -86,3 +86,17 @@ Documented so the history stays legible.
   squash only when a branch's commits are not individually meaningful.
 - Releases get annotated semver tags on `main` after the release PR merges,
   with the changelog updated in the same branch as the change it records.
+- Every release must also move the major-version tag, because that is what
+  the README tells consumers to pin. Forgetting it leaves them on the previous
+  release with no sign anything is wrong:
+
+  ```bash
+  git tag -f -a v0 -m "Moving tag for the 0.x series, currently 0.2.0"
+  git push --force origin v0
+  ```
+
+- Refresh the rendered demos by hand and commit them with the change that
+  altered them. Continuous integration checks that `demos/out/hello.svg` and
+  `demos/out/check.svg` match a fresh render, so a stale image fails the build.
+  `demos/out/colors.svg` is excluded because it lists a real directory, so its
+  output differs from one machine to the next.

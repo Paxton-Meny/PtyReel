@@ -202,7 +202,12 @@ demos/              .tape sources and their rendered output
 hooks/              plain git hooks that run the quality gate
 ```
 
-## Development
+## Contributing
+
+This is a personal project and **pull requests are not accepted**, including
+small ones. Issues are welcome and are the supported way to report a bug or
+suggest a feature. Please do not spend your time on a change that will be
+closed unmerged.
 
 There is nothing to install. One command is the whole gate:
 
@@ -210,7 +215,7 @@ There is nothing to install. One command is the whole gate:
 python -m compileall -q src tests && python -m unittest discover -s tests
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the rest.
 
 ## License
 
