@@ -8,13 +8,16 @@ before them.
 
 from __future__ import annotations
 
+import getpass
 import os
+import socket
 import unittest
 from unittest import mock
 
 from support import HAS_BASH, POSIX_ONLY, PtyReelTestCase, dump
 
 from ptyreel.errors import DriverError
+from ptyreel.identity import IDENTITY_PRESETS
 from ptyreel.layout import Layout
 from ptyreel.parse import parse_tape
 
@@ -138,6 +141,58 @@ class SessionTest(PtyReelTestCase):
         )
         self.assertNotIn("leaked", dump(recording))
         self.assertIn("[]", dump(recording))
+
+
+@POSIX_ONLY
+@HAS_BASH
+class AnonymityTest(PtyReelTestCase):
+    """A recorded session describes a generic machine, not this one."""
+
+    def tearDown(self) -> None:
+        """No session leaves a child behind."""
+        with self.assertRaises(ChildProcessError):
+            os.waitpid(-1, os.WNOHANG)
+
+    def test_shell_variables_are_the_presets(self) -> None:
+        """The environment reaches everything a shell answers from itself."""
+        recording = play('Type "echo $USER at $HOME"\nEnter\nSleep 400ms\n')
+        self.assertIn(
+            f"{IDENTITY_PRESETS['user']} at {IDENTITY_PRESETS['home']}",
+            dump(recording),
+        )
+
+    def test_commands_that_ask_the_kernel_are_substituted(self) -> None:
+        """No variable changes whoami, so the output is rewritten instead."""
+        recording = play('Type "whoami && id -un"\nEnter\nSleep 500ms\n')
+        text = dump(recording)
+        self.assertIn(IDENTITY_PRESETS["user"], text)
+        real = getpass.getuser()
+        if len(real) >= 3 and real != IDENTITY_PRESETS["user"]:
+            self.assertNotIn(real, text)
+
+    def test_the_host_name_is_substituted(self) -> None:
+        """A prompt or a banner printing the host reads as the preset."""
+        recording = play('Type "hostname"\nEnter\nSleep 400ms\n')
+        real = socket.gethostname().split(".")[0]
+        if len(real) >= 3 and real != IDENTITY_PRESETS["host"]:
+            self.assertNotIn(real, dump(recording))
+
+    def test_the_session_gets_a_home_of_its_own(self) -> None:
+        """Writing to the home directory cannot touch the real one."""
+        marker = "ptyreel-isolation-marker"
+        recording = play(f'Type "touch ~/{marker} && ls ~"\nEnter\nSleep 600ms\n')
+        self.assertIn(marker, dump(recording))
+        self.assertFalse(
+            os.path.exists(os.path.expanduser(f"~/{marker}")),
+            "the session wrote into the real home directory",
+        )
+
+    def test_opting_out_records_the_real_machine(self) -> None:
+        """Anonymising is a default, not something a tape cannot refuse."""
+        recording = play(
+            'Set Anonymize false\nType "echo $USER"\nEnter\nSleep 400ms\n'
+        )
+        self.assertNotIn(IDENTITY_PRESETS["user"], dump(recording))
 
 
 @POSIX_ONLY
