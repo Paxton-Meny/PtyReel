@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Sessions are recorded as a generic machine by default. `$USER`, `$HOME` and
+  `~` read as `LocalUser` and `/home/LocalUser`, and what `whoami`, `id` and
+  `hostname` print is substituted on the way out, since those ask the kernel
+  and no environment variable reaches them. Each session also runs with a fresh
+  home directory of its own, so a tape cannot write into your real one. Turn it
+  off with `Set Anonymize false`.
+
+### Changed
+
+- Secret redaction and identity substitution now share one streaming rewriter
+  rather than each holding their own copy of the tail-buffering logic.
+
 ## [0.1.0] - 2026-07-25
 
 First tagged release. The tape format and the rendered output may still change
