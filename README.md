@@ -104,6 +104,7 @@ anything runs.
 | `Set Loop` | `true`, `false` | `true` | Whether the animation replays for ever. |
 | `Set LoopDelay` | 0 to 30s | `2500ms` | How long the finished session rests before a replay. |
 | `Set MaskSecrets` | `true`, `false` | `true` | Redact values of secret-looking environment variables. |
+| `Set Anonymize` | `true`, `false` | `true` | Record as a generic machine rather than as yours. |
 
 ### Actions
 
@@ -189,6 +190,20 @@ written outside the workspace, and nothing dotted, so `.git` is unreachable.
 Every character that reaches the document is filtered and escaped. XML has no
 representation for most control characters, so they are removed rather than
 escaped. The output holds no script, no external reference and no font.
+
+### Recording as a generic machine
+
+A rendered image is made to be published, so by default the session is recorded
+as somebody generic. `$USER`, `$HOME` and `~` read as `LocalUser` and
+`/home/LocalUser`, and the answers `whoami`, `id` and `hostname` give are
+substituted on the way out, because those ask the kernel and no environment
+variable can change them. The session also runs with a fresh home directory of
+its own, so a tape cannot leave anything behind in your real one.
+
+The working directory is not rewritten. A demo usually runs inside the project
+it is demonstrating and that path is meant to be seen, though a project living
+under your home has the home part replaced like any other path. Turn the whole
+thing off with `Set Anonymize false` when you want the real machine on screen.
 
 See [SECURITY.md](SECURITY.md) to report a problem.
 
