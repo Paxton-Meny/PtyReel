@@ -35,15 +35,16 @@ from collections.abc import Iterable, Mapping, Sequence
 from typing import Final
 
 from ptyreel.recording import NEVER, LineVersion, Recording
+from ptyreel.rewrite import Rule, literal_rule
 
 __all__ = [
     "MASK_CHAR",
     "MIN_SECRET_LENGTH",
-    "StreamMasker",
     "collect_secrets",
     "mask_recording",
     "mask_text",
     "secret_forms",
+    "secret_rules",
 ]
 
 MASK_CHAR: Final[str] = "*"
@@ -195,63 +196,24 @@ def mask_text(value: str, forms: Sequence[str]) -> str:
     return value
 
 
-class StreamMasker:
-    """Redacts secrets from terminal output as it arrives.
+def secret_rules(forms: Sequence[str]) -> list[Rule]:
+    """Build substitutions that replace each secret with mask characters.
 
-    A match can straddle two reads, so the tail of each chunk is held back
-    until enough text has arrived to decide. :meth:`flush` releases it at the
-    end of the session.
+    The replacement is the same length as what it replaces. Length is the one
+    thing worth preserving here: a program that prints a value and then moves
+    the cursor relative to it would draw in the wrong place otherwise.
 
     Parameters
     ----------
     forms : sequence of str
-        Output of :func:`secret_forms`.
+        Output of :func:`secret_forms`, longest first.
+
+    Returns
+    -------
+    list of Rule
+        Substitutions for :class:`ptyreel.rewrite.StreamRewriter`.
     """
-
-    __slots__ = ("_forms", "_hold", "_tail")
-
-    def __init__(self, forms: Sequence[str]) -> None:
-        """Prepare a masker for a set of secret forms."""
-        self._forms = tuple(forms)
-        self._hold = max((len(form) for form in self._forms), default=1) - 1
-        self._tail = ""
-
-    def feed(self, text: str) -> str:
-        """Mask a chunk and return the part that is safe to release.
-
-        Parameters
-        ----------
-        text : str
-            Newly decoded output.
-
-        Returns
-        -------
-        str
-            Masked text, minus a held tail short enough to still be part of
-            a match.
-        """
-        if not self._forms:
-            return text
-        combined = self._tail + text
-        masked = mask_text(combined, self._forms)
-        if self._hold <= 0 or len(masked) <= self._hold:
-            self._tail = masked
-            return ""
-        cut = len(masked) - self._hold
-        self._tail = masked[cut:]
-        return masked[:cut]
-
-    def flush(self) -> str:
-        """Return whatever is still held back.
-
-        Returns
-        -------
-        str
-            The remaining masked text.
-        """
-        remaining = mask_text(self._tail, self._forms) if self._forms else self._tail
-        self._tail = ""
-        return remaining
+    return [literal_rule(form, MASK_CHAR * len(form)) for form in forms if form]
 
 
 def mask_recording(recording: Recording, forms: Sequence[str]) -> Recording:
