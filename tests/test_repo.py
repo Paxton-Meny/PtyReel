@@ -211,16 +211,23 @@ class HookTest(PtyReelTestCase):
         takes its mode from there.
         """
         try:
-            listing = subprocess.run(
-                ["git", "ls-files", "--stage", "--", "hooks"],
+            subprocess.run(
+                ["git", "rev-parse", "--is-inside-work-tree"],
                 cwd=REPO_ROOT,
                 capture_output=True,
-                text=True,
                 check=True,
                 timeout=30,
-            ).stdout
+            )
         except (OSError, subprocess.SubprocessError):
-            self.skipTest("git is not available here")
+            self.skipTest("not a usable git work tree here")
+        listing = subprocess.run(
+            ["git", "ls-files", "--stage", "--", "hooks"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=30,
+        ).stdout
         if not listing.strip():
             self.skipTest("hooks are not tracked in this checkout")
         for line in listing.splitlines():
