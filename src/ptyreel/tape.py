@@ -181,6 +181,8 @@ class TapeSettings:
         How long the finished session rests before a replay.
     mask_secrets : bool
         Whether values of secret-looking environment variables are redacted.
+    anonymize : bool
+        Whether the machine's identity is replaced with fixed stand-ins.
     """
 
     shell: str = "bash"
@@ -194,6 +196,7 @@ class TapeSettings:
     loop: bool = True
     loop_delay_ms: int = DEFAULT_LOOP_DELAY_MS
     mask_secrets: bool = True
+    anonymize: bool = True
 
 
 SETTING_SPECS: Final[dict[str, SettingSpec]] = {
@@ -212,6 +215,7 @@ SETTING_SPECS: Final[dict[str, SettingSpec]] = {
         field="loop_delay_ms", kind="duration", minimum=0, maximum=30_000
     ),
     "MaskSecrets": SettingSpec(field="mask_secrets", kind="bool"),
+    "Anonymize": SettingSpec(field="anonymize", kind="bool"),
 }
 
 

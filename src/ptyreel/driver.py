@@ -18,6 +18,11 @@ The child gets a small, fixed environment. A tape session cannot see a
 workflow token or any other secret the surrounding job holds, because those
 variables are never passed in. That, rather than redaction, is the control
 that keeps them out of a committed image.
+
+The session is also recorded as a generic machine rather than as yours. It
+runs with a fresh home directory of its own and with the identity presets in
+:mod:`ptyreel.identity`, so a tape can neither leave anything in your real
+home nor write your account name into an image meant to be published.
 """
 
 from __future__ import annotations
@@ -26,15 +31,18 @@ import errno
 import os
 import select
 import signal
+import tempfile
 import time
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Final
 
 from ptyreel.errors import DriverError
+from ptyreel.identity import identity_environ, identity_rules
 from ptyreel.keys import KEY_MAP, ctrl_code
 from ptyreel.layout import Layout
-from ptyreel.masking import StreamMasker, collect_secrets, mask_recording, secret_forms
+from ptyreel.masking import collect_secrets, mask_recording, secret_forms, secret_rules
 from ptyreel.recording import Recording
+from ptyreel.rewrite import Rule, StreamRewriter
 from ptyreel.screen import TerminalScreen
 from ptyreel.tape import (
     BOOT_MS,
@@ -71,7 +79,12 @@ _ECHO_S: Final[float] = 0.5
 
 
 def build_child_env(
-    environ: Mapping[str, str], *, shell: str, cols: int, rows: int
+    environ: Mapping[str, str],
+    *,
+    shell: str,
+    cols: int,
+    rows: int,
+    identity: Mapping[str, str] | None = None,
 ) -> dict[str, str]:
     """Build the environment the shell runs with.
 
@@ -86,6 +99,10 @@ def build_child_env(
         Absolute path of the shell being run.
     cols, rows : int
         Size of the terminal.
+    identity : mapping or None, optional
+        Values describing a generic machine, from
+        :func:`ptyreel.identity.identity_environ`. Applied last, so they win
+        over anything inherited.
 
     Returns
     -------
@@ -101,6 +118,8 @@ def build_child_env(
     child["COLUMNS"] = str(cols)
     child["LINES"] = str(rows)
     child["HISTFILE"] = "/dev/null"
+    if identity is not None:
+        child.update(identity)
     return child
 
 
@@ -160,19 +179,31 @@ def run_tape(
     forms = (
         secret_forms(collect_secrets(source)) if tape.settings.mask_secrets else ()
     )
-    session = _Session(tape=tape, layout=layout, forms=forms)
-    master, slave = pty.openpty()
-    _set_window_size(slave, cols=layout.cols, rows=layout.rows)
-    child = os.fork()
-    if child == 0:
-        _become_shell(master, slave, shell, build_child_env(
-            source, shell=shell, cols=layout.cols, rows=layout.rows
-        ))
-    os.close(slave)
-    try:
-        recording = session.play(master, child)
-    finally:
-        _terminate(master, child)
+    with tempfile.TemporaryDirectory(prefix="ptyreel-home-") as session_home:
+        rules: list[Rule] = []
+        identity: dict[str, str] | None = None
+        if tape.settings.anonymize:
+            identity = identity_environ(session_home)
+            rules.extend(identity_rules(session_home=session_home, environ=source))
+        rules.extend(secret_rules(forms))
+
+        session = _Session(tape=tape, layout=layout, rules=rules)
+        master, slave = pty.openpty()
+        _set_window_size(slave, cols=layout.cols, rows=layout.rows)
+        child = os.fork()
+        if child == 0:
+            _become_shell(master, slave, shell, build_child_env(
+                source,
+                shell=shell,
+                cols=layout.cols,
+                rows=layout.rows,
+                identity=identity,
+            ))
+        os.close(slave)
+        try:
+            recording = session.play(master, child)
+        finally:
+            _terminate(master, child)
     if forms:
         recording = mask_recording(recording, forms)
     return recording
@@ -230,12 +261,12 @@ def _terminate(master: int, child: int) -> None:
 class _Session:
     """One tape playing against one terminal."""
 
-    def __init__(self, *, tape: Tape, layout: Layout, forms: tuple[str, ...]) -> None:
-        """Prepare the screen, the clock and the masker for a session."""
+    def __init__(self, *, tape: Tape, layout: Layout, rules: Sequence[Rule]) -> None:
+        """Prepare the screen, the clock and the rewriter for a session."""
         self.tape = tape
         self.screen = TerminalScreen(cols=layout.cols, rows=layout.rows)
         self.decoder = codecs.getincrementaldecoder("utf-8")("replace")
-        self.masker = StreamMasker(forms)
+        self.rewriter = StreamRewriter(rules)
         self.now_ms = 0
         self.stamp_ms = 0
         self.hidden = False
@@ -251,7 +282,7 @@ class _Session:
         for instruction in self.tape.instructions:
             self.step(master, instruction)
         self.drain(master, _SETTLE_MS / 1000, settle=True)
-        self.feed(self.masker.flush())
+        self.feed(self.rewriter.flush())
         return self.screen.snapshot(duration_ms=self.now_ms)
 
     def step(self, master: int, instruction: object) -> None:
@@ -336,14 +367,14 @@ class _Session:
             if now > self.wall_deadline:
                 raise DriverError("session ran longer than its time budget")
             if now >= limit:
-                self.feed(self.masker.flush())
+                self.feed(self.rewriter.flush())
                 return
             if (
                 now >= end
                 and (not expect or seen)
                 and (not settle or now - last_data >= _QUIET_S)
             ):
-                self.feed(self.masker.flush())
+                self.feed(self.rewriter.flush())
                 return
             try:
                 ready, _, _ = select.select([master], [], [], 0.02)
@@ -366,7 +397,7 @@ class _Session:
                 raise DriverError(
                     f"session produced more than {MAX_PTY_BYTES} bytes of output"
                 )
-            self.feed(self.masker.feed(self.decoder.decode(chunk)))
+            self.feed(self.rewriter.feed(self.decoder.decode(chunk)))
 
     def feed(self, text: str) -> None:
         """Apply masked output to the screen unless recording is paused."""
