@@ -14,6 +14,7 @@ from __future__ import annotations
 import difflib
 import os
 import re
+import subprocess
 import sys
 import unittest
 import xml.etree.ElementTree as ElementTree
@@ -50,6 +51,39 @@ _BANNED_MARKUP: Final[tuple[str, ...]] = (
     "<!--",
     "&nbsp;",
 )
+
+
+def tracked_files(*pathspec: str) -> list[Path] | None:
+    """Return the files git tracks, or ``None`` if it cannot say.
+
+    Tests that make claims about the repository have to ask git which files
+    belong to it. Walking the filesystem instead sweeps up whatever a
+    contributor happens to have lying around, and a gate that fails on an
+    untracked scratch file is a gate people learn to ignore.
+
+    Parameters
+    ----------
+    *pathspec : str
+        Patterns to limit the listing, in git's pathspec syntax. No patterns
+        means every tracked file.
+
+    Returns
+    -------
+    list of pathlib.Path or None
+        Absolute paths, or ``None`` when this is not a usable work tree, in
+        which case the caller should skip rather than guess.
+    """
+    try:
+        listing = subprocess.run(
+            ["git", "ls-files", "-z", "--", *pathspec],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            check=True,
+            timeout=30,
+        ).stdout.decode("utf-8")
+    except (OSError, subprocess.SubprocessError, UnicodeDecodeError):
+        return None
+    return [REPO_ROOT / name for name in listing.split("\0") if name]
 
 
 def dump(recording: object) -> str:
