@@ -16,6 +16,13 @@ value the tape hard-codes rather than reading from the environment, and a
 value too short to tell apart from ordinary text. The stronger control is the
 child environment allowlist in :mod:`ptyreel.driver`, which means a workflow
 token is not present inside a tape session at all.
+
+Because that allowlist is the real control, this pass leans away from guessing.
+A wrong guess is not a harmless extra precaution: it silently replaces correct
+output with asterisks, and the person recording the session has no way to tell
+why. So the name match is deliberately narrow, the standard variables that
+collide with it are named and excluded, and a value that reads as a filesystem
+path is left alone.
 """
 
 from __future__ import annotations
@@ -63,14 +70,20 @@ _SECRET_SEGMENTS: Final[frozenset[str]] = frozenset(
         "salt",
         "secret",
         "secrets",
-        "session",
         "signature",
         "token",
         "tokens",
     }
 )
 _NEVER_SECRET: Final[frozenset[str]] = frozenset(
-    {"GPG_TTY", "SSH_AGENT_PID", "SSH_AUTH_SOCK", "XDG_SESSION_TYPE"}
+    {
+        "GPG_TTY",
+        "OLDPWD",
+        "PWD",
+        "SSH_AGENT_PID",
+        "SSH_AUTH_SOCK",
+        "XDG_SESSION_TYPE",
+    }
 )
 _UNINTERESTING: Final[frozenset[str]] = frozenset(
     {"", "0", "1", "false", "no", "none", "null", "true", "yes"}
@@ -116,6 +129,8 @@ def collect_secrets(
         if len(set(value)) == 1:
             continue
         if value.isdigit() and len(value) < 16:
+            continue
+        if value.startswith("/"):
             continue
         found.add(value)
     return tuple(sorted(found, key=lambda item: (-len(item), item)))
