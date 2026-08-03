@@ -40,6 +40,41 @@ class CollectTest(PtyReelTestCase):
             with self.subTest(name=name):
                 self.assertEqual(collect_secrets({name: SECRET}), ())
 
+    def test_standard_variables_are_never_secrets(self) -> None:
+        """These collide with the word list and appear on every machine.
+
+        Masking one of them replaces correct output with asterisks and gives
+        no clue why, so each is excluded by name or by the shape of its value.
+        """
+        ordinary = {
+            "PWD": "/home/alice/projects/demo",
+            "OLDPWD": "/home/alice",
+            "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+            "SESSION_MANAGER": "local/box:@/tmp/.ICE-unix/1234",
+            "XDG_SESSION_DESKTOP": "gnome-session",
+            "XDG_SESSION_ID": "seat0-session-12345",
+        }
+        for name, value in ordinary.items():
+            with self.subTest(name=name):
+                self.assertEqual(
+                    collect_secrets({name: value}), (), f"{name} must not be masked"
+                )
+
+    def test_a_path_is_never_a_secret(self) -> None:
+        """A value that reads as a filesystem path is left alone."""
+        self.assertEqual(collect_secrets({"MY_TOKEN": "/var/run/something/long"}), ())
+
+    def test_real_secrets_still_collected_alongside_them(self) -> None:
+        """Narrowing the match must not stop it finding an actual secret."""
+        found = collect_secrets(
+            {
+                "PWD": "/home/alice/projects/demo",
+                "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+                "MY_API_TOKEN": SECRET,
+            }
+        )
+        self.assertEqual(found, (SECRET,))
+
     def test_ignored_values(self) -> None:
         """Values too short or too ordinary are not worth masking."""
         for value in ("short", "true", "FALSE", "1", "aaaaaaaaaa", "12345"):
