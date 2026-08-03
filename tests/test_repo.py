@@ -12,7 +12,7 @@ import subprocess
 import unittest
 from pathlib import Path
 
-from support import REPO_ROOT, PtyReelTestCase
+from support import REPO_ROOT, PtyReelTestCase, tracked_files
 
 from ptyreel.parse import parse_tape
 
@@ -241,10 +241,20 @@ class ProseTest(PtyReelTestCase):
     """Documentation follows the house style."""
 
     def documents(self) -> list[Path]:
-        """Return the prose a reader of the repository meets."""
-        found = [path for path in REPO_ROOT.glob("*.md")]
-        found.extend((REPO_ROOT / ".github").rglob("*.md"))
+        """Return the prose a reader of the repository meets.
+
+        Only tracked files count. Globbing the working tree would sweep up
+        whatever a contributor has lying around, and failing the gate on
+        somebody's scratch notes teaches them to distrust it.
+        """
+        found = tracked_files("*.md")
+        if found is None:
+            self.skipTest("not a usable git work tree here")
         return sorted(found)
+
+    def test_documents_were_found(self) -> None:
+        """A listing that matched nothing would make the checks vacuous."""
+        self.assertGreater(len(self.documents()), 3)
 
     def test_no_filler_words(self) -> None:
         """These words carry no information and read as padding."""

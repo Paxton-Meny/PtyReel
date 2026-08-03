@@ -12,7 +12,7 @@ import tokenize
 import unittest
 from pathlib import Path
 
-from support import REPO_ROOT, SRC_ROOT, TESTS_ROOT, PtyReelTestCase
+from support import REPO_ROOT, SRC_ROOT, TESTS_ROOT, PtyReelTestCase, tracked_files
 
 PACKAGE_ROOT = SRC_ROOT / "ptyreel"
 SOURCES = sorted(PACKAGE_ROOT.glob("*.py"))
@@ -154,32 +154,28 @@ class HygieneTest(PtyReelTestCase):
     """Nothing in the repository points at files that are not in it."""
 
     def tracked(self) -> list[Path]:
-        """Return the files a reader of the repository would see."""
-        roots = ("src", "tests", "demos", ".github", "hooks")
-        found: list[Path] = []
-        for root in roots:
-            base = REPO_ROOT / root
-            if base.exists():
-                found.extend(
-                    path for path in base.rglob("*") if path.is_file()
-                )
-        found.extend(
-            REPO_ROOT / name
-            for name in ("README.md", "CHANGELOG.md", "CONTRIBUTING.md", "action.yml")
-            if (REPO_ROOT / name).exists()
-        )
+        """Return the files a reader of the repository would see.
+
+        Asked of git rather than of the filesystem, so an untracked scratch
+        file cannot fail the gate for something that is not in the project.
+        """
+        found = tracked_files()
+        if found is None:
+            self.skipTest("not a usable git work tree here")
         return found
 
     def test_no_dangling_references(self) -> None:
         """Local-only files are never named by anything committed.
 
-        This module is skipped, because it has to spell the names out in
-        order to look for them.
+        Two files are exempt and both have to be. This module spells the
+        names out in order to look for them, and the ignore file has to name
+        what it ignores.
         """
+        exempt = {Path(__file__).name, ".gitignore"}
         for path in self.tracked():
             if path.suffix == ".svg" or path.name.endswith(".pyc"):
                 continue
-            if path.name == Path(__file__).name:
+            if path.name in exempt:
                 continue
             try:
                 text = path.read_text(encoding="utf-8")
