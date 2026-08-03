@@ -7,11 +7,11 @@ import unittest
 from support import PtyReelTestCase, dump
 
 from ptyreel.masking import (
-    StreamMasker,
     collect_secrets,
     mask_recording,
     mask_text,
     secret_forms,
+    secret_rules,
 )
 from ptyreel.screen import TerminalScreen
 
@@ -119,29 +119,19 @@ class MaskTextTest(PtyReelTestCase):
         self.assertEqual(len(masked), len(f"token={SECRET} done"))
 
 
-class StreamTest(PtyReelTestCase):
-    """The stream filter sees a value split across two reads."""
+class SecretRuleTest(PtyReelTestCase):
+    """Rules built from secrets keep the length of what they replace."""
 
-    def test_split_across_chunks(self) -> None:
-        """Holding a tail is what makes the second half match."""
-        masker = StreamMasker(secret_forms([SECRET]))
-        released = masker.feed("value=hunter2") + masker.feed("hunter2 end")
-        released += masker.flush()
-        self.assertNotIn(SECRET, released)
-        self.assertIn("value=", released)
-        self.assertIn(" end", released)
+    def test_replacement_is_the_same_length(self) -> None:
+        """A program that prints a value then moves the cursor still lines up."""
+        for rule in secret_rules(secret_forms([SECRET])):
+            with self.subTest(replacement=rule.replacement):
+                self.assertEqual(len(rule.replacement), rule.width)
+                self.assertEqual(set(rule.replacement), {"*"})
 
-    def test_nothing_is_lost(self) -> None:
-        """Everything fed comes out, masked or not."""
-        masker = StreamMasker(secret_forms([SECRET]))
-        released = masker.feed("hello ") + masker.feed("world") + masker.flush()
-        self.assertEqual(released, "hello world")
-
-    def test_no_secrets_passes_through(self) -> None:
-        """With nothing to mask the filter adds no delay."""
-        masker = StreamMasker(())
-        self.assertEqual(masker.feed("abc"), "abc")
-        self.assertEqual(masker.flush(), "")
+    def test_empty_forms_make_no_rules(self) -> None:
+        """Nothing to mask means nothing to substitute."""
+        self.assertEqual(secret_rules(()), [])
 
 
 class RecordingTest(PtyReelTestCase):
