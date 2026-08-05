@@ -1,5 +1,12 @@
 # PtyReel
 
+[![ci](https://github.com/Paxton-Meny/PtyReel/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Paxton-Meny/PtyReel/actions/workflows/ci.yml)
+[![action self-test](https://github.com/Paxton-Meny/PtyReel/actions/workflows/action.yml/badge.svg?branch=main)](https://github.com/Paxton-Meny/PtyReel/actions/workflows/action.yml)
+[![CodeQL](https://github.com/Paxton-Meny/PtyReel/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/Paxton-Meny/PtyReel/security/code-scanning)
+[![release](https://img.shields.io/github/v/release/Paxton-Meny/PtyReel)](https://github.com/Paxton-Meny/PtyReel/releases)
+[![python](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FPaxton-Meny%2FPtyReel%2Fmain%2Fpyproject.toml)](https://github.com/Paxton-Meny/PtyReel/blob/main/pyproject.toml)
+[![license](https://img.shields.io/github/license/Paxton-Meny/PtyReel)](LICENSE)
+
 Record scripted terminal sessions as self-contained animated SVGs, using only
 the Python standard library.
 
