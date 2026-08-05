@@ -49,6 +49,17 @@ is tested against, and `tests/regenerate_golden.py`.
 gate does not have. It asserts the docstrings, the annotations, the absence of
 comments in the package, and the module shape.
 
+## Which platforms run what
+
+The gate runs on Linux and on macOS. The pseudo-terminal driver is where they
+differ in ways that matter: macOS ships bash 3.2, and a terminal whose child
+has exited reports end of file there while Linux reports an error instead.
+Both are handled, and the matrix is what keeps them handled.
+
+The action's self-test runs on Linux only. It asserts that a freshly rendered
+demo matches the committed one, and the committed one was rendered on Linux, so
+that check cannot be platform independent. It tests the action, not the shell.
+
 ## Regenerating golden files
 
 The renderer is compared against stored documents in `tests/golden/`. After a
