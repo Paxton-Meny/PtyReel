@@ -266,6 +266,24 @@ class ClaimTest(PtyReelTestCase):
                 "the README promises macOS and the gate never runs there",
             )
 
+    def test_badges_point_at_workflows_that_exist(self) -> None:
+        """A status badge names a workflow file this repository has.
+
+        A badge for a renamed or deleted workflow keeps rendering, as a grey
+        pill reading nothing useful, so the coupling is asserted here where
+        it can fail loudly instead.
+        """
+        names = re.findall(
+            r"actions/workflows/([\w.-]+\.yml)/badge\.svg", self.readme()
+        )
+        self.assertTrue(names, "no workflow badges found in the README")
+        for name in names:
+            with self.subTest(badge=name):
+                self.assertTrue(
+                    (WORKFLOWS / name).exists(),
+                    f"the README wears a badge for {name}, which does not exist",
+                )
+
     def test_python_floor_is_one_number_everywhere(self) -> None:
         """The floor in pyproject is the floor the README and the gate use.
 
