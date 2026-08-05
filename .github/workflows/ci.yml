@@ -13,8 +13,12 @@ concurrency:
 
 jobs:
   gate:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
