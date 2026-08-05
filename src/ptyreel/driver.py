@@ -108,7 +108,11 @@ def build_child_env(
     -------
     dict
         The child's environment, with a fixed prompt so the recording does
-        not depend on the machine it ran on.
+        not depend on the machine it ran on. Apple's bash is told to keep
+        quiet too: at interactive startup it prints an advertisement for
+        zsh unless ``BASH_SILENCE_DEPRECATION_WARNING`` is set, and that
+        banner would open every recording made on macOS. The variable means
+        nothing anywhere else.
     """
     child = {name: environ[name] for name in _INHERITED if name in environ}
     child["TERM"] = "xterm-256color"
@@ -118,6 +122,7 @@ def build_child_env(
     child["COLUMNS"] = str(cols)
     child["LINES"] = str(rows)
     child["HISTFILE"] = "/dev/null"
+    child["BASH_SILENCE_DEPRECATION_WARNING"] = "1"
     if identity is not None:
         child.update(identity)
     return child

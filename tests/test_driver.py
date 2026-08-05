@@ -99,9 +99,16 @@ class SessionTest(PtyReelTestCase):
         self.assertIn("visible", text)
 
     def test_control_character_reaches_the_shell(self) -> None:
-        """An interrupt cancels the line being typed."""
+        """An interrupt cancels the line being typed.
+
+        Whether the terminal echoes the interrupt as ``^C`` differs by
+        platform, so the assertion looks for what echo would have printed
+        had it run, a line holding nothing but the word, rather than for
+        the raw text with a newline after it.
+        """
         recording = play('Type "echo never"\nCtrl+C\nSleep 300ms\n')
-        self.assertNotIn("never\n", dump(recording) + "\n")
+        lines = [line.strip() for line in dump(recording).split("\n")]
+        self.assertNotIn("never", lines)
 
     def test_invalid_bytes_become_a_replacement(self) -> None:
         """Output that is not valid text still produces a usable document."""
@@ -132,6 +139,7 @@ class SessionTest(PtyReelTestCase):
         self.assertEqual(child["PATH"], "/usr/bin")
         self.assertEqual(child["PS1"], "$ ")
         self.assertEqual(child["TERM"], "xterm-256color")
+        self.assertEqual(child["BASH_SILENCE_DEPRECATION_WARNING"], "1")
 
     def test_environment_variables_do_not_leak(self) -> None:
         """The shell itself cannot see a variable that was not passed in."""
@@ -171,11 +179,16 @@ class AnonymityTest(PtyReelTestCase):
             self.assertNotIn(real, text)
 
     def test_the_host_name_is_substituted(self) -> None:
-        """A prompt or a banner printing the host reads as the preset."""
+        """A prompt or a banner printing the host reads as the preset.
+
+        Both forms are checked, because macOS answers ``hostname`` with the
+        full ``name.local`` form and Linux with the short one.
+        """
         recording = play('Type "hostname"\nEnter\nSleep 400ms\n')
-        real = socket.gethostname().split(".")[0]
-        if len(real) >= 3 and real != IDENTITY_PRESETS["host"]:
-            self.assertNotIn(real, dump(recording))
+        full = socket.gethostname()
+        for real in (full, full.split(".")[0]):
+            if len(real) >= 3 and real != IDENTITY_PRESETS["host"]:
+                self.assertNotIn(real, dump(recording))
 
     def test_the_session_gets_a_home_of_its_own(self) -> None:
         """Writing to the home directory cannot touch the real one."""
