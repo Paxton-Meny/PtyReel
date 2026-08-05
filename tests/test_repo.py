@@ -237,6 +237,54 @@ class HookTest(PtyReelTestCase):
                 self.assertEqual(mode, "100755", f"{path} is not executable")
 
 
+class ClaimTest(PtyReelTestCase):
+    """A promise in the documentation has something executable behind it.
+
+    The README claimed macOS support for two weeks before anything ran
+    there, and the first run found a banner in every recording and a host
+    name leaking through the anonymizer. A claim nothing executes is one
+    that rots silently, so the claims a machine can check are checked here.
+    """
+
+    def readme(self) -> str:
+        """Return the README."""
+        return (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+
+    def ci(self) -> str:
+        """Return the gate workflow."""
+        return (WORKFLOWS / "ci.yml").read_text(encoding="utf-8")
+
+    def test_platform_claims_have_a_matrix_behind_them(self) -> None:
+        """Naming a platform in the README puts it in the gate's matrix."""
+        readme = self.readme()
+        ci = self.ci()
+        self.assertIn("ubuntu-latest", ci)
+        if re.search(r"\bmacOS\b", readme):
+            self.assertIn(
+                "macos-latest",
+                ci,
+                "the README promises macOS and the gate never runs there",
+            )
+
+    def test_python_floor_is_one_number_everywhere(self) -> None:
+        """The floor in pyproject is the floor the README and the gate use.
+
+        The metadata is the source of truth, so the other two are checked
+        against it rather than against a copy of the number here.
+        """
+        import tomllib
+
+        metadata = tomllib.loads(
+            (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        )
+        requires = metadata["project"]["requires-python"]
+        match = re.fullmatch(r">=(\d+)\.(\d+)", requires)
+        self.assertIsNotNone(match, f"unexpected floor syntax: {requires}")
+        major, minor = int(match.group(1)), int(match.group(2))
+        self.assertIn(f"{major}.{minor} or newer", self.readme())
+        self.assertIn(f"sys.version_info >= ({major}, {minor})", self.ci())
+
+
 class ProseTest(PtyReelTestCase):
     """Documentation follows the house style."""
 
