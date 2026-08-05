@@ -102,10 +102,9 @@ def identity_rules(
         if path and path != "/":
             rules.append(literal_rule(path, preset_home))
 
-    for name, preset in (
-        (_real_user(source), IDENTITY_PRESETS["user"]),
-        (_real_host(), IDENTITY_PRESETS["host"]),
-    ):
+    candidates = [(_real_user(source), IDENTITY_PRESETS["user"])]
+    candidates.extend((form, IDENTITY_PRESETS["host"]) for form in _host_forms())
+    for name, preset in candidates:
         if name and len(name) >= _MIN_SUBSTITUTABLE and name != preset:
             rules.append(word_rule(name, preset))
     return rules
@@ -123,9 +122,18 @@ def _real_user(environ: Mapping[str, str]) -> str:
         return ""
 
 
-def _real_host() -> str:
-    """Return this machine's host name, or the empty string."""
+def _host_forms() -> tuple[str, ...]:
+    """Return this machine's host name in the forms it prints as.
+
+    macOS answers ``hostname`` with the full form, ``name.local``, while the
+    short form appears in prompts and logs. The short form's rule refuses to
+    match where a dot follows, which is right for a file name and wrong for
+    the full host name, so the full form gets a rule of its own. Longest
+    first, so it wins where both could apply.
+    """
     try:
-        return socket.gethostname().split(".")[0]
+        full = socket.gethostname()
     except OSError:
-        return ""
+        return ()
+    short = full.split(".")[0]
+    return tuple(sorted({full, short}, key=len, reverse=True))

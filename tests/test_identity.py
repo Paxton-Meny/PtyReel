@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unittest
+from unittest import mock
 
 from support import PtyReelTestCase
 
@@ -75,6 +76,25 @@ class RuleTest(PtyReelTestCase):
         """A home of / would otherwise rewrite every path in the output."""
         rules = identity_rules(session_home="/tmp/x", environ={"HOME": "/", "USER": "x"})
         self.assertEqual(rewrite_text("/usr/bin", rules), "/usr/bin")
+
+    def test_full_host_name_is_substituted(self) -> None:
+        """macOS answers hostname with name.local, so both forms need rules.
+
+        The short form's rule stops at a dot on purpose, which is exactly why
+        it cannot cover the full form on its own.
+        """
+        with mock.patch(
+            "ptyreel.identity.socket.gethostname", return_value="mybox.local"
+        ):
+            rules = identity_rules(
+                session_home="/tmp/x",
+                environ={"HOME": "/home/alice", "USER": "alice"},
+            )
+        self.assertEqual(
+            rewrite_text("mybox.local", rules), IDENTITY_PRESETS["host"]
+        )
+        self.assertEqual(rewrite_text("mybox", rules), IDENTITY_PRESETS["host"])
+        self.assertEqual(rewrite_text("mybox.py", rules), "mybox.py")
 
 
 if __name__ == "__main__":
