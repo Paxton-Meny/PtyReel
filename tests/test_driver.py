@@ -222,10 +222,16 @@ class FailureTest(PtyReelTestCase):
         self.assertIn("time budget", str(caught.exception))
 
     def test_output_flood_is_capped(self) -> None:
-        """A command that prints without end is stopped by the byte cap."""
+        """A command that prints without end is stopped by the byte cap.
+
+        The flood is a shell loop rather than a pipeline through ``tr``,
+        because a builtin behaves the same on every platform. It prints long
+        runs with no newline in them on purpose: short lines would reach the
+        line limit first and the session would fail for the other reason.
+        """
+        run = "while :; do printf '%s' " + "a" * 60 + "; done"
         tape = parse_tape(
-            "Output out/a.svg\n"
-            'Type "head -c 4000000 /dev/zero | tr \'\\\\0\' a"\nEnter\nSleep 10s\n',
+            "Output out/a.svg\n" f'Type "{run}"\nEnter\nSleep 10s\n',
             source="t.tape",
         )
         layout = Layout.from_settings(tape.settings)
