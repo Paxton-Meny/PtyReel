@@ -1,16 +1,8 @@
-# project-standards:begin
-CLAUDE.md
-.claude/
-LAWS.md
-*_STANDARDS.md
+# Secrets
 .env
 .env.*
 *.pem
 *.key
-# project-standards:end
-
-# Prototype reference (local only)
-/orig/
 
 # Python
 __pycache__/
