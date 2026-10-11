@@ -413,6 +413,19 @@ class EndFrameTest(PtyReelTestCase):
         with self.assertRaisesRegex(AssertionError, "v w0: static opacity 1 is not"):
             self.assert_svg_sane(document)
 
+    def test_dim_colour_survives_its_reveal(self) -> None:
+        """Dimming uses a property no animation sets, so a reveal keeps it."""
+        recording = dataclasses.replace(
+            RECORDINGS["minimal"],
+            styles=(Style(), Style(fg=1, dim=True)),
+            lines=(line(0, "$ hi", start_ms=0, step_ms=200, styles=(1, 1, 1, 1)),),
+        )
+        document = render_svg(recording, settings=BASE)
+        self.assertIn(".s1{fill:", document)
+        self.assertIn("fill-opacity:0.65", document)
+        self.assertNotRegex(document, r"\.s1\{[^}]*(?<!-)opacity:")
+        self.assert_svg_sane(document)
+
 
 def _by_id(root: ElementTree.Element, identifier: str) -> ElementTree.Element:
     """Return the one element carrying an id."""
