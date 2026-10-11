@@ -2,14 +2,14 @@
 <title>a &lt;script&gt;alert(1)&lt;/script&gt; "x" &amp; 'y'</title>
 <style>
 text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'DejaVu Sans Mono', Consolas, monospace;font-size:15px;fill:#e6edf3;white-space:pre}
-.c{opacity:0;animation-duration:1.600s;animation-timing-function:step-end;animation-iteration-count:infinite;animation-fill-mode:none}
+.c{animation-duration:1.600s;animation-timing-function:step-end;animation-iteration-count:infinite;animation-fill-mode:none}
 .r0{animation-name:r0}
 @keyframes r0{0%{opacity:0}17.5000%{opacity:1}}
 .r1{animation-name:r1}
 @keyframes r1{0%{opacity:0}37.5000%{opacity:1}}
 #cursor{fill:#58a6ff;animation:blink 1.100s step-end infinite}
 @keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important}.c{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 <defs>
 <linearGradient id="backdrop" x1="0" y1="0" x2="1" y2="1">

@@ -2,7 +2,7 @@
 <title>fixture</title>
 <style>
 text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'DejaVu Sans Mono', Consolas, monospace;font-size:15px;fill:#e6edf3;white-space:pre}
-.c{opacity:0;animation-duration:2.000s;animation-timing-function:step-end;animation-iteration-count:infinite;animation-fill-mode:none}
+.c{animation-duration:2.000s;animation-timing-function:step-end;animation-iteration-count:infinite;animation-fill-mode:none}
 .r0{animation-name:r0}
 @keyframes r0{0%{opacity:0}10.0000%{opacity:1}}
 .r1{animation-name:r1}
@@ -12,7 +12,7 @@ text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Dej
 #cursor{fill:#58a6ff;animation:track 2.000s step-end infinite,blink 1.100s step-end infinite;animation-fill-mode:none,none}
 @keyframes track{0.0000%{transform:translate(0px,2px)}30.0000%{transform:translate(36px,2px)}}
 @keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important}.c{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 <defs>
 <linearGradient id="backdrop" x1="0" y1="0" x2="1" y2="1">
