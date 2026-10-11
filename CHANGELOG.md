@@ -14,11 +14,32 @@ All notable changes to this project are documented here. The format follows
   and no environment variable reaches them. Each session also runs with a fresh
   home directory of its own, so a tape cannot write into your real one. Turn it
   off with `Set Anonymize false`.
+- `demos/scroll.tape`, a demo whose output is taller than the window. The
+  action self-test re-renders it and compares, so the scrolling path always
+  has an up to date image behind it.
 
 ### Changed
 
 - Secret redaction and identity substitution now share one streaming rewriter
   rather than each holding their own copy of the tail-buffering logic.
+- Every rendered document differs from 0.1.0 in its markup, including ones
+  that look the same. A workflow that compares a committed image against a
+  fresh render needs the image rendered again.
+
+### Fixed
+
+- A session whose output outgrew the window was misplaced in every browser.
+  For the whole animation the text sat shifted left by the padding and up by
+  the title bar, clipped at the window's left edge. The scroll animation's CSS
+  transform replaced the content's position instead of adding to it. Renderers
+  that ignore animation drew the final frame correctly, which is how it went
+  unnoticed.
+- A document set to `Set Loop false` went blank in a browser the moment it
+  finished playing.
+- A reader who asked for reduced motion saw only the lines that existed when
+  the session started, which is usually none of them.
+- Dim text with a colour played at full strength in a browser. It was dimmed
+  only where animation is ignored.
 
 ## [0.1.0] - 2026-07-25
 
