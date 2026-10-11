@@ -56,10 +56,12 @@ text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Dej
 <circle cx="95" cy="48" r="6" fill="#27c93f" stroke="#000000" stroke-opacity="0.12"/>
 <text x="200.000" y="53" text-anchor="middle" font-family="&#39;Fira Code&#39;, &#39;JetBrains Mono&#39;, &#39;SF Mono&#39;, &#39;Cascadia Code&#39;, &#39;DejaVu Sans Mono&#39;, Consolas, monospace" font-size="13" letter-spacing="0.2" fill="#8b949e">fixture</text>
 <g clip-path="url(#content-clip)">
-<g id="scroll" transform="translate(51,94) translate(0,0)" xml:space="preserve">
+<g transform="translate(51,94)">
+<g id="scroll" transform="translate(0,0)" xml:space="preserve">
 <text x="0" y="17"><tspan x="0" textLength="9" lengthAdjust="spacingAndGlyphs">0</tspan><tspan x="9" textLength="9" class="s1" lengthAdjust="spacingAndGlyphs">1</tspan><tspan x="18" textLength="9" class="s2" lengthAdjust="spacingAndGlyphs">2</tspan><tspan x="27" textLength="9" class="s3" lengthAdjust="spacingAndGlyphs">3</tspan><tspan x="36" textLength="9" class="s4" lengthAdjust="spacingAndGlyphs">4</tspan><tspan x="45" textLength="9" class="s5" lengthAdjust="spacingAndGlyphs">5</tspan><tspan x="54" textLength="9" class="s6" lengthAdjust="spacingAndGlyphs">6</tspan><tspan x="63" textLength="9" class="s7" lengthAdjust="spacingAndGlyphs">7</tspan><tspan x="72" textLength="9" class="s8" lengthAdjust="spacingAndGlyphs">8</tspan><tspan x="81" textLength="9" class="s9" lengthAdjust="spacingAndGlyphs">9</tspan></text>
 <text x="0" y="41"><tspan x="0" textLength="45" class="s10 c r0" lengthAdjust="spacingAndGlyphs">mixed</tspan></text>
 <rect id="cursor" x="0" y="0" width="9" height="19" rx="1.500" transform="translate(45,26)"/>
+</g>
 </g>
 </g>
 </g>
