@@ -26,7 +26,7 @@ from ptyreel.svg import render_svg
 from ptyreel.tape import Tape, TapeSettings
 from ptyreel.theme import THEMES, Theme
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "NEVER",
