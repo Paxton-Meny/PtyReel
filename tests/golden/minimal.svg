@@ -50,9 +50,11 @@ text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Dej
 <circle cx="95" cy="48" r="6" fill="#27c93f" stroke="#000000" stroke-opacity="0.12"/>
 <text x="200.000" y="53" text-anchor="middle" font-family="&#39;Fira Code&#39;, &#39;JetBrains Mono&#39;, &#39;SF Mono&#39;, &#39;Cascadia Code&#39;, &#39;DejaVu Sans Mono&#39;, Consolas, monospace" font-size="13" letter-spacing="0.2" fill="#8b949e">fixture</text>
 <g clip-path="url(#content-clip)">
-<g id="scroll" transform="translate(51,94) translate(0,0)" xml:space="preserve">
+<g transform="translate(51,94)">
+<g id="scroll" transform="translate(0,0)" xml:space="preserve">
 <text x="0" y="17"><tspan x="0" textLength="9" lengthAdjust="spacingAndGlyphs">$</tspan><tspan x="9" textLength="9" class="c r0" lengthAdjust="spacingAndGlyphs"> </tspan><tspan x="18" textLength="9" class="c r1" lengthAdjust="spacingAndGlyphs">h</tspan><tspan x="27" textLength="9" class="c r2" lengthAdjust="spacingAndGlyphs">i</tspan></text>
 <rect id="cursor" x="0" y="0" width="9" height="19" rx="1.500" transform="translate(36,2)"/>
+</g>
 </g>
 </g>
 </g>
