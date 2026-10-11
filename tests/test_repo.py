@@ -50,6 +50,26 @@ class DemoTest(PtyReelTestCase):
             with self.subTest(tape=path.name):
                 parse_tape(path.read_text(encoding="utf-8"), source=path.name)
 
+    def test_rendered_demos_are_sane(self) -> None:
+        """A committed image passes the rules a fresh render must pass."""
+        found = tracked_files("demos/out/*.svg")
+        if found is None:
+            self.skipTest("not a usable git work tree here")
+        self.assertTrue(found)
+        for path in sorted(found):
+            with self.subTest(image=path.name):
+                self.assert_svg_sane(path.read_text(encoding="utf-8"))
+
+    def test_a_demo_scrolls(self) -> None:
+        """The scrolling path has a committed image behind it.
+
+        No demo scrolled when the scroll animation broke in every browser,
+        so nothing a person looked at showed the fault. The scroll demo is
+        there to keep that path on screen.
+        """
+        image = (DEMOS / "out" / "scroll.svg").read_text(encoding="utf-8")
+        self.assertIn("@keyframes scroll", image)
+
 
 class ActionTest(PtyReelTestCase):
     """The action interface says what the README says."""
