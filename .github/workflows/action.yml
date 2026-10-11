@@ -44,6 +44,12 @@ jobs:
         with:
           tape: demos/check.tape
 
+      - name: Render the scrolling demo
+        id: scroll
+        uses: ./
+        with:
+          tape: demos/scroll.tape
+
       - name: Validate a tape without running it
         id: dryrun
         uses: ./
@@ -56,15 +62,17 @@ jobs:
         env:
           HERO: ${{ steps.hero.outputs.svg-path }}
           SELFCHECK: ${{ steps.selfcheck.outputs.svg-path }}
+          SCROLL: ${{ steps.scroll.outputs.svg-path }}
           DRYRUN: ${{ steps.dryrun.outputs.svg-path }}
         run: |
           set -euo pipefail
           test "$HERO" = "demos/out/hello.svg"
           test "$SELFCHECK" = "demos/out/check.svg"
+          test "$SCROLL" = "demos/out/scroll.svg"
           test -z "$DRYRUN"
 
       - name: The committed demos are up to date
         shell: bash
         run: |
           set -euo pipefail
-          git diff --exit-code --stat -- demos/out/hello.svg demos/out/check.svg
+          git diff --exit-code --stat -- demos/out/hello.svg demos/out/check.svg demos/out/scroll.svg

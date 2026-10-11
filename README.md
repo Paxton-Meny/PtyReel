@@ -176,6 +176,11 @@ line or the screen, and colour and text attributes. Scrolling moves the window
 rather than losing text, and a line that gets rewritten is replaced rather than
 drawn over, so progress bars and prompt redraws come out right.
 
+![Thirty lines of output scrolling through a nine-row window](demos/out/scroll.svg)
+
+That one is [demos/scroll.tape](demos/scroll.tape): output taller than the
+window, so the content slides up as the session runs.
+
 Not supported, and consumed without corrupting the text around it: the
 alternate screen buffer, background colours, and the 256 colour and true colour
 forms of `SGR 38` and `SGR 48`. Full screen programs are out of scope.
