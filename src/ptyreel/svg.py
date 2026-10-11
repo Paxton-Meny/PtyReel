@@ -20,7 +20,8 @@ An element's static style is the frame the session ends on, and its animation
 only describes the way there. A finished animation that holds its last frame
 falls back to the static style, and so does a reader who asked for stillness
 and a renderer that ignores animation, so all of them see the finished
-session.
+session. Nothing a run of text needs for its look, such as dimming, uses a
+property an animation sets, because the animation would override it.
 
 Rendering is a pure function of its arguments. It reads no clock, draws no
 random numbers and iterates no unordered collection, so the same recording
@@ -172,7 +173,7 @@ def _declarations(style: Style, theme: Theme) -> str:
     elif style.dim:
         parts.append(f"fill:{theme.dim}")
     if style.dim and style.fg is not None:
-        parts.append("opacity:0.65")
+        parts.append("fill-opacity:0.65")
     if style.bold:
         parts.append("font-weight:700")
     if style.italic:
