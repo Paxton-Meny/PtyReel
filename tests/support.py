@@ -195,7 +195,58 @@ class PtyReelTestCase(unittest.TestCase):
                 self.assertIn(reference, identifiers, f"dangling reference {reference}")
             self.assertNotRegex(value, r"\A(https?:|//|data:|javascript:)")
         self.assert_css_closed(svg, root)
+        self.assert_transforms_survive_animation(root)
         return root
+
+    def assert_transforms_survive_animation(self, root: ElementTree.Element) -> None:
+        """Check that no CSS transform animation discards a transform attribute.
+
+        A CSS ``transform`` replaces an element's ``transform`` attribute
+        instead of composing with it. Static renderers ignore the animation,
+        so a mistake here only shows in a browser. An element a transform
+        animation targets may therefore carry only the value the animation
+        itself rests on, and whatever positions it must sit on an ancestor
+        that no animation touches.
+
+        Parameters
+        ----------
+        root : xml.etree.ElementTree.Element
+            A parsed document.
+        """
+        style = root.find(f"{SVG_NS}style")
+        css = (style.text or "") if style is not None else ""
+        keyframes = _keyframes(css)
+        animated: dict[int, tuple[ElementTree.Element, list[str]]] = {}
+        for selector, body in _rules(css):
+            names = _animation_names(body)
+            if not names:
+                continue
+            for part in selector.split(","):
+                for element in _select(root, part):
+                    entry = animated.setdefault(id(element), (element, []))
+                    entry[1].extend(names)
+        for element, names in animated.values():
+            moving = [name for name in names if _final_translation(keyframes, name)]
+            if not moving:
+                continue
+            label = element.get("id") or element.get("class") or element.tag
+            self.assertEqual(len(moving), 1, f"{label}: two transform animations")
+            final = _final_translation(keyframes, moving[0])
+            attribute = element.get("transform")
+            if attribute is not None:
+                steps = translations(attribute)
+                self.assertEqual(
+                    len(steps),
+                    1,
+                    f"{label}: transform attribute {attribute!r} holds more than the "
+                    "animated value, and the animation would discard the rest",
+                )
+                self.assertEqual(
+                    steps[0],
+                    final,
+                    f"{label}: transform attribute {attribute!r} is not the frame "
+                    f"the {moving[0]} animation rests on",
+                )
 
     def assert_css_closed(self, svg: str, root: ElementTree.Element) -> None:
         """Check that every class and animation is both defined and used."""
@@ -224,3 +275,86 @@ class PtyReelTestCase(unittest.TestCase):
 def _attribute_values(root: ElementTree.Element) -> list[str]:
     """Collect every attribute value in a document."""
     return [value for element in root.iter() for value in element.attrib.values()]
+
+
+_KEYFRAMES = re.compile(r"@keyframes\s+([\w-]+)\s*\{((?:[^{}]*\{[^{}]*\})*)\s*\}")
+_STOP = re.compile(r"([^{}]+)\{([^{}]*)\}")
+_RULE = re.compile(r"(?<![\w%])([#.][\w-]+(?:\s*,\s*[#.][\w-]+)*)\s*\{([^{}]*)\}")
+_TRANSLATE = re.compile(r"\s*(translate[XY]?)\(([^)]*)\)\s*")
+
+
+def _keyframes(css: str) -> dict[str, list[tuple[float, str]]]:
+    """Map each keyframes name to its stops, in order of position."""
+    found: dict[str, list[tuple[float, str]]] = {}
+    for name, body in _KEYFRAMES.findall(css):
+        stops: list[tuple[float, str]] = []
+        for positions, declarations in _STOP.findall(body):
+            for position in positions.split(","):
+                position = position.strip()
+                percent = {"from": 0.0, "to": 100.0}.get(position)
+                if percent is None:
+                    percent = float(position.rstrip("%"))
+                stops.append((percent, declarations))
+        found[name] = sorted(stops, key=lambda stop: stop[0])
+    return found
+
+
+def _rules(css: str) -> list[tuple[str, str]]:
+    """Return every rule whose selector names an id or a class."""
+    outside = _KEYFRAMES.sub("", css)
+    return _RULE.findall(outside)
+
+
+def _animation_names(body: str) -> list[str]:
+    """Return the animations a rule body applies."""
+    names: list[str] = []
+    for declaration in body.split(";"):
+        prop, _, value = declaration.partition(":")
+        prop = prop.strip()
+        if prop == "animation-name":
+            names.extend(part.strip() for part in value.split(","))
+        elif prop == "animation":
+            names.extend(part.split()[0] for part in value.split(",") if part.split())
+    return [name for name in names if name not in ("none", "none!important")]
+
+
+def _select(root: ElementTree.Element, selector: str) -> list[ElementTree.Element]:
+    """Return the elements a single ``#id`` or ``.class`` selector matches."""
+    selector = selector.strip()
+    if selector.startswith("#"):
+        return [e for e in root.iter() if e.get("id") == selector[1:]]
+    return [e for e in root.iter() if selector[1:] in (e.get("class") or "").split()]
+
+
+def translations(transform: str) -> list[tuple[float, float]]:
+    """Parse a transform made only of translations into one pair per step."""
+    steps: list[tuple[float, float]] = []
+    position = 0
+    while position < len(transform):
+        match = _TRANSLATE.match(transform, position)
+        if match is None:
+            raise AssertionError(f"not a list of translations: {transform!r}")
+        kind, raw = match.groups()
+        values = [float(part.strip().removesuffix("px")) for part in raw.split(",")]
+        if kind == "translateX":
+            steps.append((values[0], 0.0))
+        elif kind == "translateY":
+            steps.append((0.0, values[0]))
+        else:
+            steps.append((values[0], values[1] if len(values) > 1 else 0.0))
+        position = match.end()
+    return steps
+
+
+def _final_translation(
+    keyframes: dict[str, list[tuple[float, str]]], name: str
+) -> tuple[float, float] | None:
+    """Return where a transform animation rests, or ``None`` if it moves nothing."""
+    final = None
+    for _, declarations in keyframes.get(name, []):
+        for declaration in declarations.split(";"):
+            prop, _, value = declaration.partition(":")
+            if prop.strip() == "transform":
+                steps = translations(value)
+                final = (sum(x for x, _ in steps), sum(y for _, y in steps))
+    return final

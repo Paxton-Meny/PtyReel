@@ -235,14 +235,17 @@ def _cursor_rules(
 
 
 def _content(recording: Recording, layout: Layout, timeline: Timeline) -> list[str]:
-    """Build the scrolling group holding every line and the cursor."""
+    """Build the scrolling group holding every line and the cursor.
+
+    The content origin and the scroll offset live on two nested groups. A CSS
+    transform replaces an element's transform attribute rather than composing
+    with it, so the group the scroll animation targets carries the scroll
+    offset alone, and the origin sits on an ancestor no animation touches.
+    """
     final_top = recording.scrolls[-1][1]
-    group = attrs(
-        id="scroll",
-        transform=f"translate({layout.content_x},{layout.content_top}) "
-        f"translate(0,{-final_top * layout.line_height})",
-    )
-    lines = [f"<g{group} xml:space=\"preserve\">"]
+    origin = attrs(transform=f"translate({layout.content_x},{layout.content_top})")
+    group = attrs(id="scroll", transform=f"translate(0,{-final_top * layout.line_height})")
+    lines = [f"<g{origin}>", f"<g{group} xml:space=\"preserve\">"]
     runs = 0
     for version in recording.lines:
         markup, count = _line(version, layout, timeline)
@@ -255,6 +258,7 @@ def _content(recording: Recording, layout: Layout, timeline: Timeline) -> list[s
         if markup:
             lines.append(markup)
     lines.append(_cursor(recording, layout))
+    lines.append("</g>")
     lines.append("</g>")
     return lines
 

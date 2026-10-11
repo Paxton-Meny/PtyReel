@@ -16,11 +16,12 @@ import sys
 import unittest
 import xml.etree.ElementTree as ElementTree
 
-from support import SRC_ROOT, SVG_NS, PtyReelTestCase
+from support import SRC_ROOT, SVG_NS, PtyReelTestCase, translations
 
 from fixtures import BASE, COLS, RECORDINGS, SETTINGS, line
 
 from ptyreel.errors import RenderError
+from ptyreel.layout import Layout
 from ptyreel.recording import NEVER, Recording, Style
 from ptyreel.svg import render_svg
 from ptyreel.timeline import MAX_ANIMATIONS
@@ -160,6 +161,75 @@ class AnimationTest(PtyReelTestCase):
         self.assertNotIn("@keyframes scroll", document)
 
 
+class ScrollOriginTest(PtyReelTestCase):
+    """The scroll animation moves the content without losing its origin.
+
+    A CSS transform replaces the transform attribute of the element it
+    animates. When the content origin shared that attribute with the scroll
+    offset, every browser drew the text shifted up and left for the whole
+    animation, while a static renderer showed the final frame correctly.
+    """
+
+    def render(self) -> str:
+        """Render the fixture that scrolls."""
+        return render_svg(RECORDINGS["buckets"], settings=SETTINGS["buckets"])
+
+    def test_scroll_group_carries_only_the_offset(self) -> None:
+        """The animated group holds the scroll offset and nothing else."""
+        root = ElementTree.fromstring(self.render())
+        group = _by_id(root, "scroll")
+        self.assertEqual(group.get("transform"), "translate(0,-24)")
+
+    def test_origin_sits_on_an_unanimated_ancestor(self) -> None:
+        """What the animation cannot reach still places the content."""
+        layout = Layout.from_settings(SETTINGS["buckets"])
+        root = ElementTree.fromstring(self.render())
+        parents = {child: parent for parent in root.iter() for child in parent}
+        x = y = 0.0
+        ancestor = parents.get(_by_id(root, "scroll"))
+        while ancestor is not None:
+            transform = ancestor.get("transform")
+            if transform is not None:
+                self.assertIsNone(ancestor.get("id"), "a rule could select it")
+                self.assertIsNone(ancestor.get("class"), "a rule could select it")
+                for step_x, step_y in translations(transform):
+                    x += step_x
+                    y += step_y
+            ancestor = parents.get(ancestor)
+        self.assertEqual((x, y), (layout.content_x, layout.content_top))
+
+    def test_check_rejects_an_origin_on_the_scroll_group(self) -> None:
+        """The structural rule catches the layout that was broken."""
+        layout = Layout.from_settings(SETTINGS["buckets"])
+        origin = f"translate({layout.content_x},{layout.content_top})"
+        document = self.render().replace(
+            f'<g transform="{origin}">\n<g id="scroll" transform="translate(0,-24)"',
+            f'<g>\n<g id="scroll" transform="{origin} translate(0,-24)"',
+        )
+        self.assertIn(f"{origin} translate(0,-24)", document)
+        with self.assertRaisesRegex(AssertionError, "scroll: transform attribute"):
+            self.assert_svg_sane(document)
+
+    def test_check_rejects_a_cursor_resting_elsewhere(self) -> None:
+        """The cursor's attribute must be the frame its track animation ends on."""
+        document = self.render().replace(
+            'transform="translate(36,50)"', 'transform="translate(36,26)"'
+        )
+        self.assertIn('transform="translate(36,26)"', document)
+        with self.assertRaisesRegex(AssertionError, "cursor: transform attribute"):
+            self.assert_svg_sane(document)
+
+    def test_scrolled_once_rests_on_the_last_frame(self) -> None:
+        """Without a loop, the scroll and the cursor hold their final place."""
+        settings = dataclasses.replace(SETTINGS["buckets"], loop=False)
+        document = render_svg(RECORDINGS["buckets"], settings=settings)
+        self.assertIn(
+            "#scroll{animation:scroll 4.000s step-end 1;animation-fill-mode:forwards}",
+            document,
+        )
+        self.assert_svg_sane(document)
+
+
 class DeterminismTest(PtyReelTestCase):
     """The same recording always produces the same bytes."""
 
@@ -291,6 +361,14 @@ class EmptyTest(PtyReelTestCase):
         self.assertEqual(LineVersionBlank.times, (NEVER,) * COLS)
         root = ElementTree.fromstring(render_svg(recording, settings=BASE))
         self.assertEqual(list(root.iter(f"{SVG_NS}tspan")), [])
+
+
+def _by_id(root: ElementTree.Element, identifier: str) -> ElementTree.Element:
+    """Return the one element carrying an id."""
+    found = [element for element in root.iter() if element.get("id") == identifier]
+    if len(found) != 1:
+        raise AssertionError(f"expected one element with id {identifier}")
+    return found[0]
 
 
 def _percentages(document: str) -> list[str]:
