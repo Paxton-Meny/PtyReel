@@ -78,7 +78,7 @@ caused them.
 hand and commit the result:
 
 ```bash
-python -m ptyreel demos/hello.tape demos/colors.tape demos/check.tape
+python -m ptyreel demos/hello.tape demos/colors.tape demos/check.tape demos/scroll.tape
 ```
 
 Continuous integration never renders and never pushes. Rendering runs the
@@ -107,7 +107,9 @@ Documented so the history stays legible.
   ```
 
 - Refresh the rendered demos by hand and commit them with the change that
-  altered them. Continuous integration checks that `demos/out/hello.svg` and
-  `demos/out/check.svg` match a fresh render, so a stale image fails the build.
-  `demos/out/colors.svg` is excluded because it lists a real directory, so its
-  output differs from one machine to the next.
+  altered them. Continuous integration checks that `demos/out/hello.svg`,
+  `demos/out/check.svg` and `demos/out/scroll.svg` match a fresh render, so a
+  stale image fails the build. `demos/out/colors.svg` is excluded because it
+  lists a real directory, so its output differs from one machine to the next.
+  `scroll.tape` is the only demo whose output outgrows the window, so it is
+  the one that carries a scrolling animation.
