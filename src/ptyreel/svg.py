@@ -16,6 +16,12 @@ scrolls, and the cursor rides along with it. All of them share one cycle
 length, so a looping document stays in step for ever rather than drifting
 apart after the first pass.
 
+An element's static style is the frame the session ends on, and its animation
+only describes the way there. A finished animation that holds its last frame
+falls back to the static style, and so does a reader who asked for stillness
+and a renderer that ignores animation, so all of them see the finished
+session.
+
 Rendering is a pure function of its arguments. It reads no clock, draws no
 random numbers and iterates no unordered collection, so the same recording
 always produces the same bytes.
@@ -114,7 +120,7 @@ def _stylesheet(
     ]
     if animated:
         rules.append(
-            f"{','.join(animated)}{{opacity:0;animation-duration:{cycle};"
+            f"{','.join(animated)}{{animation-duration:{cycle};"
             f"animation-timing-function:step-end;animation-iteration-count:{repeat};"
             f"animation-fill-mode:{fill}}}"
         )
@@ -124,14 +130,12 @@ def _stylesheet(
         rules.append(f".{name}{{animation-name:{name}}}")
         rules.append(f"@keyframes {name}{{0%{{opacity:0}}{stop}%{{opacity:1}}}}")
     for name, birth, death in timeline.windows:
-        rules.append(f".{name}{{animation-name:{name}}}")
+        rest = "" if death == NEVER else ";opacity:0"
+        rules.append(f".{name}{{animation-name:{name}{rest}}}")
         rules.append(f"@keyframes {name}{{{_window_stops(timeline, birth, death)}}}")
     rules.extend(_scroll_rules(recording, layout, timeline, cycle, repeat, fill))
     rules.extend(_cursor_rules(recording, layout, theme, timeline, cycle, repeat, fill))
-    still = "*{animation:none!important}"
-    if timeline.reveals:
-        still += ".c{opacity:1}"
-    rules.append(f"@media(prefers-reduced-motion:reduce){{{still}}}")
+    rules.append("@media(prefers-reduced-motion:reduce){*{animation:none!important}}")
     return rules
 
 

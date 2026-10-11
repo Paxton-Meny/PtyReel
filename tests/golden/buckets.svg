@@ -2,7 +2,7 @@
 <title>fixture</title>
 <style>
 text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'DejaVu Sans Mono', Consolas, monospace;font-size:15px;fill:#1f2328;white-space:pre}
-.c,.v{opacity:0;animation-duration:5.000s;animation-timing-function:step-end;animation-iteration-count:infinite;animation-fill-mode:none}
+.c,.v{animation-duration:5.000s;animation-timing-function:step-end;animation-iteration-count:infinite;animation-fill-mode:none}
 .s1{fill:#116329}
 .r0{animation-name:r0}
 @keyframes r0{0%{opacity:0}1.6000%{opacity:1}}
@@ -10,7 +10,7 @@ text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Dej
 @keyframes r1{0%{opacity:0}17.6000%{opacity:1}}
 .r2{animation-name:r2}
 @keyframes r2{0%{opacity:0}77.6000%{opacity:1}}
-.w0{animation-name:w0}
+.w0{animation-name:w0;opacity:0}
 @keyframes w0{0%{opacity:0}1.6000%{opacity:1}17.6000%{opacity:0}}
 .w1{animation-name:w1}
 @keyframes w1{0%{opacity:0}17.6000%{opacity:1}}
@@ -19,7 +19,7 @@ text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Dej
 #cursor{fill:#0969da;animation:track 5.000s step-end infinite,blink 1.100s step-end infinite;animation-fill-mode:none,none}
 @keyframes track{0.0000%{transform:translate(0px,2px)}18.0000%{transform:translate(36px,26px)}78.0000%{transform:translate(36px,50px)}}
 @keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important}.c{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 <defs>
 <linearGradient id="backdrop" x1="0" y1="0" x2="1" y2="1">

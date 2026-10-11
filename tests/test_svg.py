@@ -363,6 +363,57 @@ class EmptyTest(PtyReelTestCase):
         self.assertEqual(list(root.iter(f"{SVG_NS}tspan")), [])
 
 
+class EndFrameTest(PtyReelTestCase):
+    """The static style is the finished session.
+
+    A finished animation with no stop at 100% falls back to the static
+    style, and a reader who asked for stillness sees only that. When every
+    cell was hidden statically, a document that played once went blank as
+    it ended, and a still one hid every line written after the start.
+    """
+
+    def render(self, **changes: object) -> str:
+        """Render the fixture with a replaced line and a scroll."""
+        settings = dataclasses.replace(SETTINGS["buckets"], **changes)
+        return render_svg(RECORDINGS["buckets"], settings=settings)
+
+    def test_cells_are_shown_statically(self) -> None:
+        """Nothing hides a cell except its own reveal animation."""
+        document = self.render(loop=False)
+        self.assertRegex(document, r"\.c,\.v\{animation-duration:")
+        self.assertNotIn("opacity:0;animation-duration", document)
+
+    def test_replaced_versions_are_hidden_statically(self) -> None:
+        """A version that died ends hidden, one that survived ends shown."""
+        document = self.render(loop=False)
+        self.assertIn(".w0{animation-name:w0;opacity:0}", document)
+        self.assertIn(".w1{animation-name:w1}", document)
+
+    def test_reduced_motion_only_stops_animation(self) -> None:
+        """The static style already is the last frame, so nothing is restyled."""
+        document = self.render()
+        self.assertIn(
+            "@media(prefers-reduced-motion:reduce){*{animation:none!important}}",
+            document,
+        )
+
+    def test_check_rejects_cells_hidden_statically(self) -> None:
+        """The structural rule catches the stylesheet that went blank."""
+        document = self.render(loop=False).replace(
+            ".c,.v{animation-duration:", ".c,.v{opacity:0;animation-duration:"
+        )
+        with self.assertRaisesRegex(AssertionError, "static opacity 0 is not"):
+            self.assert_svg_sane(document)
+
+    def test_check_rejects_a_dead_version_shown_statically(self) -> None:
+        """A replaced line left visible would show through its replacement."""
+        document = self.render(loop=False).replace(
+            ".w0{animation-name:w0;opacity:0}", ".w0{animation-name:w0}"
+        )
+        with self.assertRaisesRegex(AssertionError, "v w0: static opacity 1 is not"):
+            self.assert_svg_sane(document)
+
+
 def _by_id(root: ElementTree.Element, identifier: str) -> ElementTree.Element:
     """Return the one element carrying an id."""
     found = [element for element in root.iter() if element.get("id") == identifier]
