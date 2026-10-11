@@ -196,7 +196,49 @@ class PtyReelTestCase(unittest.TestCase):
             self.assertNotRegex(value, r"\A(https?:|//|data:|javascript:)")
         self.assert_css_closed(svg, root)
         self.assert_transforms_survive_animation(root)
+        self.assert_static_opacity_is_final(root)
         return root
+
+    def assert_static_opacity_is_final(self, root: ElementTree.Element) -> None:
+        """Check that every element's static opacity is the frame it ends on.
+
+        An animation with no stop at 100% takes its end value from the static
+        style. A document that plays once holds that value when it finishes,
+        and a reader who asked for stillness sees nothing else, so the static
+        style must already be the finished session. When the reveal rule hid
+        every cell statically, a document that played once went blank at the
+        end and a still one never showed most of its lines.
+
+        An animation that declares its own 100% stop, such as the cursor's
+        blink, sets its own end and is not held to this.
+
+        Parameters
+        ----------
+        root : xml.etree.ElementTree.Element
+            A parsed document.
+        """
+        style = root.find(f"{SVG_NS}style")
+        css = (style.text or "") if style is not None else ""
+        keyframes = _keyframes(css)
+        rules = _rules(css)
+        for selector, body in rules:
+            for name in _animation_names(body):
+                stops = keyframes.get(name, [])
+                if not stops or stops[-1][0] == 100.0:
+                    continue
+                final = _last_value(stops, "opacity")
+                if final is None:
+                    continue
+                for part in selector.split(","):
+                    for element in _select(root, part):
+                        static = _static_value(rules, element, "opacity") or "1"
+                        label = element.get("id") or element.get("class") or element.tag
+                        self.assertEqual(
+                            float(static),
+                            float(final),
+                            f"{label}: static opacity {static} is not the "
+                            f"opacity {final} the {name} animation ends on",
+                        )
 
     def assert_transforms_survive_animation(self, root: ElementTree.Element) -> None:
         """Check that no CSS transform animation discards a transform attribute.
@@ -280,6 +322,7 @@ def _attribute_values(root: ElementTree.Element) -> list[str]:
 _KEYFRAMES = re.compile(r"@keyframes\s+([\w-]+)\s*\{((?:[^{}]*\{[^{}]*\})*)\s*\}")
 _STOP = re.compile(r"([^{}]+)\{([^{}]*)\}")
 _RULE = re.compile(r"(?<![\w%])([#.][\w-]+(?:\s*,\s*[#.][\w-]+)*)\s*\{([^{}]*)\}")
+_MEDIA = re.compile(r"@media[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}")
 _TRANSLATE = re.compile(r"\s*(translate[XY]?)\(([^)]*)\)\s*")
 
 
@@ -300,9 +343,47 @@ def _keyframes(css: str) -> dict[str, list[tuple[float, str]]]:
 
 
 def _rules(css: str) -> list[tuple[str, str]]:
-    """Return every rule whose selector names an id or a class."""
-    outside = _KEYFRAMES.sub("", css)
+    """Return every unconditional rule whose selector names an id or a class."""
+    outside = _MEDIA.sub("", _KEYFRAMES.sub("", css))
     return _RULE.findall(outside)
+
+
+def _last_value(stops: list[tuple[float, str]], name: str) -> str | None:
+    """Return the value the last stop declaring a property gives it."""
+    found = None
+    for _, declarations in stops:
+        for declaration in declarations.split(";"):
+            prop, _, value = declaration.partition(":")
+            if prop.strip() == name:
+                found = value.strip()
+    return found
+
+
+def _static_value(
+    rules: list[tuple[str, str]], element: ElementTree.Element, name: str
+) -> str | None:
+    """Return a property's value from the last rule that selects an element.
+
+    Every selector the renderer writes is a single id or a single class, so
+    source order decides between the rules that set the same property.
+    """
+    found = None
+    for selector, body in rules:
+        if not any(_matches(element, part) for part in selector.split(",")):
+            continue
+        for declaration in body.split(";"):
+            prop, _, value = declaration.partition(":")
+            if prop.strip() == name:
+                found = value.strip()
+    return found
+
+
+def _matches(element: ElementTree.Element, selector: str) -> bool:
+    """Return whether a single ``#id`` or ``.class`` selector matches an element."""
+    selector = selector.strip()
+    if selector.startswith("#"):
+        return element.get("id") == selector[1:]
+    return selector[1:] in (element.get("class") or "").split()
 
 
 def _animation_names(body: str) -> list[str]:
@@ -320,10 +401,7 @@ def _animation_names(body: str) -> list[str]:
 
 def _select(root: ElementTree.Element, selector: str) -> list[ElementTree.Element]:
     """Return the elements a single ``#id`` or ``.class`` selector matches."""
-    selector = selector.strip()
-    if selector.startswith("#"):
-        return [e for e in root.iter() if e.get("id") == selector[1:]]
-    return [e for e in root.iter() if selector[1:] in (e.get("class") or "").split()]
+    return [element for element in root.iter() if _matches(element, selector)]
 
 
 def translations(transform: str) -> list[tuple[float, float]]:
