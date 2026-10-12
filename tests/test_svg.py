@@ -425,6 +425,22 @@ class ScrollGridTest(PtyReelTestCase):
                 self.assertGreaterEqual(cursor_top, 0)
                 self.assertLessEqual(cursor_top + layout.cursor_height, layout.line_height)
 
+    def test_check_rejects_a_clip_reaching_into_the_padding(self) -> None:
+        """The structural rule catches the clip that showed scrolled lines."""
+        layout = Layout.from_settings(SETTINGS["buckets"])
+        bar = layout.window_y + layout.title_bar_height
+        document = render_svg(RECORDINGS["buckets"], settings=SETTINGS["buckets"]).replace(
+            f'<clipPath id="content-clip">\n<rect x="{layout.window_x}" '
+            f'y="{layout.content_top}" width="{layout.window_width}" '
+            f'height="{layout.rows * layout.line_height}"/>',
+            f'<clipPath id="content-clip">\n<rect x="{layout.window_x}" y="{bar}" '
+            f'width="{layout.window_width}" '
+            f'height="{layout.window_y + layout.window_height - bar}"/>',
+        )
+        self.assertIn(f'y="{bar}"', document)
+        with self.assertRaisesRegex(AssertionError, "so it shows the padding"):
+            self.assert_svg_sane(document)
+
     def test_scroll_lands_with_the_text_it_makes_room_for(self) -> None:
         """The new line and the scroll switch on at the same stop."""
         document = render_svg(self.scrolling(), settings=BASE)
@@ -434,6 +450,16 @@ class ScrollGridTest(PtyReelTestCase):
         self.assertIsNotNone(reveal)
         self.assertEqual(scroll.group(1), reveal.group(1))
         self.assert_svg_sane(document)
+
+    def test_check_rejects_text_shown_before_its_scroll(self) -> None:
+        """The structural rule catches text drawn below the last row."""
+        document = render_svg(self.scrolling(), settings=BASE)
+        late = re.search(r"(@keyframes scroll\{0\.0000%[^}]*\})([\d.]+)%", document)
+        document = document.replace(
+            late.group(0), f"{late.group(1)}{float(late.group(2)) + 0.4:.4f}%"
+        )
+        with self.assertRaisesRegex(AssertionError, "below the last row"):
+            self.assert_svg_sane(document)
 
 
 class EndFrameTest(PtyReelTestCase):

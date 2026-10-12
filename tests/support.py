@@ -12,6 +12,7 @@ a test.
 from __future__ import annotations
 
 import difflib
+import math
 import os
 import re
 import subprocess
@@ -197,7 +198,176 @@ class PtyReelTestCase(unittest.TestCase):
         self.assert_css_closed(svg, root)
         self.assert_transforms_survive_animation(root)
         self.assert_static_opacity_is_final(root)
+        self.assert_content_stays_in_grid(root)
         return root
+
+    def assert_content_stays_in_grid(self, root: ElementTree.Element) -> None:
+        """Check that nothing is drawn outside the terminal's rows, at any moment.
+
+        The layout is derived from the document itself: its size, its font
+        size, and the padding its content origin implies. Then, at every stop
+        of every session animation, each visible run of text and the cursor
+        are placed the way a browser places them, with a CSS transform
+        replacing the attribute of the element it animates, and checked
+        against the grid.
+
+        A run must sit exactly on a row and inside the columns. One below the
+        last row is never acceptable, since that text has not scrolled into
+        view yet. One above the first row is history and may stay visible as
+        long as the clip hides it. The clip itself must not reach into the
+        padding, so the rows are the only place anything can appear.
+
+        Parameters
+        ----------
+        root : xml.etree.ElementTree.Element
+            A parsed document.
+        """
+        from ptyreel.layout import Layout
+        from ptyreel.tape import TapeSettings
+
+        scroll = next((e for e in root.iter() if e.get("id") == "scroll"), None)
+        if scroll is None:
+            return
+        style = root.find(f"{SVG_NS}style")
+        css = (style.text or "") if style is not None else ""
+        rules = _rules(css)
+        session = {
+            name: stops
+            for name, stops in _keyframes(css).items()
+            if stops and stops[-1][0] != 100.0
+        }
+        parents = {child: parent for parent in root.iter() for child in parent}
+        animated = _animations_by_element(root, rules)
+
+        def path_to(element: ElementTree.Element) -> list[ElementTree.Element]:
+            """Return an element followed by each of its ancestors."""
+            path = [element]
+            while path[-1] in parents:
+                path.append(parents[path[-1]])
+            return path
+
+        font = re.search(r"(?<![\w-])text\{[^}]*font-size:(\d+)px", css)
+        window = _clip_rect(root, "window-clip")
+        self.assertIsNotNone(font, "no font size for the text")
+        self.assertIsNotNone(window, "no window clip")
+        origin_x = sum(
+            x for e in path_to(scroll) for x, _ in translations(e.get("transform") or "")
+        )
+        layout = Layout.from_settings(
+            TapeSettings(
+                width=int(root.get("width") or 0),
+                height=int(root.get("height") or 0),
+                font_size=int(font.group(1)),
+                padding=round(origin_x - window[0]),
+            )
+        )
+        grid_top = layout.content_top
+        grid_bottom = grid_top + layout.rows * layout.line_height
+        band_top, band_bottom = -math.inf, math.inf
+        for element in path_to(scroll):
+            reference = re.fullmatch(r"url\(#([\w-]+)\)", element.get("clip-path") or "")
+            if reference:
+                rect = _clip_rect(root, reference.group(1))
+                self.assertIsNotNone(rect, f"clip {reference.group(1)} has no rect")
+                band_top = max(band_top, rect[1])
+                band_bottom = min(band_bottom, rect[1] + rect[3])
+        self.assertGreaterEqual(
+            band_top, grid_top, f"the content clip starts {grid_top - band_top}px "
+            "above the first row, so it shows the padding"
+        )
+        self.assertLessEqual(
+            band_bottom, grid_bottom, f"the content clip ends {band_bottom - grid_bottom}px "
+            "below the last row, so it shows the padding"
+        )
+
+        motion: dict[int, tuple[object, object]] = {}
+
+        def behaviour(element: ElementTree.Element) -> tuple[object, object]:
+            """Return how an element moves and fades: keyframe stops, or a fixed value."""
+            known = motion.get(id(element))
+            if known is None:
+                moves = fades = None
+                for name in animated.get(id(element), []):
+                    stops = session.get(name, [])
+                    if _last_value(stops, "transform") is not None:
+                        moves = stops
+                    if _last_value(stops, "opacity") is not None:
+                        fades = stops
+                static_move = tuple(
+                    map(sum, zip((0.0, 0.0), *translations(element.get("transform") or "")))
+                )
+                static_fade = float(_static_value(rules, element, "opacity") or 1)
+                known = (moves or static_move, fades or static_fade)
+                motion[id(element)] = known
+            return known
+
+        def placed(path: list[ElementTree.Element], moment: float) -> tuple[float, float] | None:
+            """Return where a path draws its element at a moment, or ``None`` if hidden."""
+            x = y = 0.0
+            for element in path:
+                moves, fades = behaviour(element)
+                opacity = (
+                    float(_value_at(fades, "opacity", moment))
+                    if isinstance(fades, list)
+                    else fades
+                )
+                if opacity <= 0:
+                    return None
+                if isinstance(moves, list):
+                    steps = translations(_value_at(moves, "transform", moment))
+                    step = (sum(a for a, _ in steps), sum(b for _, b in steps))
+                else:
+                    step = moves
+                x += step[0]
+                y += step[1]
+            return x, y
+
+        runs: list[tuple[str, list[ElementTree.Element], float, float, float]] = []
+        for text in scroll.iter(f"{SVG_NS}text"):
+            for span in text.iter(f"{SVG_NS}tspan"):
+                runs.append((
+                    f"run {span.text!r}",
+                    path_to(span),
+                    float(text.get("y") or 0) - layout.baseline_offset,
+                    float(span.get("x") or 0),
+                    float(span.get("textLength") or 0),
+                ))
+        for cursor in scroll.iter():
+            if cursor.get("id") == "cursor":
+                runs.append((
+                    "cursor",
+                    path_to(cursor),
+                    float(cursor.get("y") or 0) - layout.baseline_offset + layout.cursor_offset,
+                    float(cursor.get("x") or 0),
+                    float(cursor.get("width") or 0),
+                ))
+        moments = sorted({0.0} | {p for stops in session.values() for p, _ in stops})
+        for moment in moments:
+            for label, path, rise, left, width in runs:
+                where = placed(path, moment)
+                if where is None:
+                    continue
+                row = (where[1] + rise - grid_top) / layout.line_height
+                column = (where[0] + left - layout.content_x) / layout.char_width
+                span = width / layout.char_width
+                at = f"{label} at {moment:g}%"
+                self.assertAlmostEqual(row, round(row), 6, f"{at} sits between rows")
+                self.assertAlmostEqual(column, round(column), 6, f"{at} sits between columns")
+                self.assertGreaterEqual(column, 0, f"{at} starts left of the first column")
+                self.assertLessEqual(
+                    column + span, layout.cols, f"{at} runs past the last column"
+                )
+                self.assertLess(
+                    round(row), layout.rows,
+                    f"{at} is drawn on row {round(row)}, below the last row "
+                    f"{layout.rows - 1}, before anything scrolled it into view",
+                )
+                box_top = grid_top + round(row) * layout.line_height
+                if box_top + layout.line_height > band_top and box_top < band_bottom:
+                    self.assertGreaterEqual(
+                        round(row), 0,
+                        f"{at} is drawn on row {round(row)}, above the first row",
+                    )
 
     def assert_static_opacity_is_final(self, root: ElementTree.Element) -> None:
         """Check that every element's static opacity is the frame it ends on.
@@ -436,3 +606,46 @@ def _final_translation(
                 steps = translations(value)
                 final = (sum(x for x, _ in steps), sum(y for _, y in steps))
     return final
+
+
+def _value_at(stops: list[tuple[float, str]], name: str, moment: float) -> str:
+    """Return the value a step-end animation gives a property at a moment."""
+    found = None
+    for percent, declarations in stops:
+        if percent > moment:
+            break
+        for declaration in declarations.split(";"):
+            prop, _, value = declaration.partition(":")
+            if prop.strip() == name:
+                found = value.strip()
+    if found is None:
+        raise AssertionError(f"no {name} at {moment}% in an animation that sets it")
+    return found
+
+
+def _animations_by_element(
+    root: ElementTree.Element, rules: list[tuple[str, str]]
+) -> dict[int, list[str]]:
+    """Map each element, by identity, to the animations rules apply to it."""
+    found: dict[int, list[str]] = {}
+    for selector, body in rules:
+        names = _animation_names(body)
+        if not names:
+            continue
+        for part in selector.split(","):
+            for element in _select(root, part):
+                found.setdefault(id(element), []).extend(names)
+    return found
+
+
+def _clip_rect(
+    root: ElementTree.Element, identifier: str
+) -> tuple[float, float, float, float] | None:
+    """Return the x, y, width and height of the rect a clip path holds."""
+    for clip in root.iter(f"{SVG_NS}clipPath"):
+        if clip.get("id") == identifier:
+            rect = clip.find(f"{SVG_NS}rect")
+            if rect is None:
+                return None
+            return tuple(float(rect.get(key) or 0) for key in ("x", "y", "width", "height"))
+    return None
