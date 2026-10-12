@@ -124,8 +124,23 @@ class PercentTest(PtyReelTestCase):
         """Four decimal places, always."""
         timeline = build_timeline(recording(), loop=False, loop_delay_ms=0)
         self.assertEqual(timeline.percent(0), "0.0000")
-        self.assertEqual(timeline.percent(500), "50.0000")
+        self.assertEqual(timeline.percent(520), "52.0000")
         self.assertEqual(timeline.percent(1_000), "100.0000")
+
+    def test_stops_land_on_bucket_starts(self) -> None:
+        """Every time in a bucket is placed at the bucket's start.
+
+        Reveals were placed at their bucket's start and scrolls at their
+        exact time, so a scroll arrived after the text it made room for.
+        Placing every stop the same way makes them coincide.
+        """
+        timeline = build_timeline(recording(), loop=False, loop_delay_ms=0)
+        start = timeline.percent(480)
+        self.assertEqual(start, "48.0000")
+        for time_ms in (481, 500, 519):
+            with self.subTest(time_ms=time_ms):
+                self.assertEqual(timeline.percent(time_ms), start)
+        self.assertEqual(timeline.percent(520), "52.0000")
 
     def test_thirds_do_not_wobble(self) -> None:
         """A repeating fraction rounds the same way every time."""
