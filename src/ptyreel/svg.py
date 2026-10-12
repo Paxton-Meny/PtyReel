@@ -194,13 +194,13 @@ def _scroll_rules(
     """Build the animation that slides content upward as the session scrolls."""
     if len(recording.scrolls) < 2:
         return []
-    stops: list[str] = []
+    stops: dict[str, str] = {}
     for time_ms, top in recording.scrolls:
         offset = -top * layout.line_height
-        stops.append(f"{timeline.percent(time_ms)}%{{transform:translateY({offset}px)}}")
+        stops[timeline.percent(time_ms)] = f"transform:translateY({offset}px)"
     return [
         f"#scroll{{animation:scroll {cycle} step-end {repeat};animation-fill-mode:{fill}}}",
-        f"@keyframes scroll{{{''.join(stops)}}}",
+        f"@keyframes scroll{{{_join_stops(stops)}}}",
     ]
 
 
@@ -223,20 +223,27 @@ def _cursor_rules(
             f"{_BLINK_MS / 1000:.3f}s step-end infinite}}",
             blink,
         ]
-    stops: list[str] = []
+    stops: dict[str, str] = {}
     for time_ms, line, column in recording.cursors:
         x = layout.column_x(column)
         y = layout.baseline(line) - layout.cursor_offset
-        stops.append(
-            f"{timeline.percent(time_ms)}%{{transform:translate({x}px,{y}px)}}"
-        )
+        stops[timeline.percent(time_ms)] = f"transform:translate({x}px,{y}px)"
     return [
         f"#cursor{{fill:{theme.cursor};animation:track {cycle} step-end {repeat},"
         f"blink {_BLINK_MS / 1000:.3f}s step-end infinite;"
         f"animation-fill-mode:{fill},none}}",
-        f"@keyframes track{{{''.join(stops)}}}",
+        f"@keyframes track{{{_join_stops(stops)}}}",
         blink,
     ]
+
+
+def _join_stops(stops: dict[str, str]) -> str:
+    """Write keyframe stops, one per percentage, in the order they were added.
+
+    Several events in one bucket share a percentage. A dictionary keeps the
+    last state written for each, which is the state the bucket ends in.
+    """
+    return "".join(f"{percent}%{{{declarations}}}" for percent, declarations in stops.items())
 
 
 def _content(recording: Recording, layout: Layout, timeline: Timeline) -> list[str]:
