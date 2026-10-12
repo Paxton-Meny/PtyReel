@@ -11,6 +11,7 @@ from __future__ import annotations
 import dataclasses
 import hashlib
 import os
+import re
 import subprocess
 import sys
 import unittest
@@ -363,6 +364,46 @@ class EmptyTest(PtyReelTestCase):
         self.assertEqual(list(root.iter(f"{SVG_NS}tspan")), [])
 
 
+class ScrollGridTest(PtyReelTestCase):
+    """Only the terminal's rows ever show.
+
+    The content clip used to start at the title bar, so a line scrolled
+    above the first row stayed visible in the top padding.
+    """
+
+    def test_clip_covers_exactly_the_rows(self) -> None:
+        """The padding above the first row and below the last stays empty."""
+        layout = Layout.from_settings(SETTINGS["buckets"])
+        root = ElementTree.fromstring(
+            render_svg(RECORDINGS["buckets"], settings=SETTINGS["buckets"])
+        )
+        rect = _by_id(root, "content-clip").find(f"{SVG_NS}rect")
+        self.assertEqual(float(rect.get("y")), layout.content_top)
+        self.assertEqual(float(rect.get("height")), layout.rows * layout.line_height)
+
+    def test_rows_hold_their_glyphs_and_the_cursor(self) -> None:
+        """Clipping to the rows cuts nothing that belongs on one.
+
+        A row's box must hold the tallest ascender and the deepest
+        descender a monospace font draws, generously taken as 1.1 em above
+        the baseline and 0.4 em below, which covers full height box drawing,
+        and the whole cursor block. Checked at every font size a tape may
+        set.
+        """
+        for size in range(8, 41):
+            with self.subTest(font_size=size):
+                layout = Layout.from_settings(
+                    dataclasses.replace(BASE, font_size=size, width=4096, height=4096)
+                )
+                above = layout.baseline_offset
+                below = layout.line_height - layout.baseline_offset
+                self.assertGreaterEqual(above, 1.1 * size)
+                self.assertGreaterEqual(below, 0.4 * size)
+                cursor_top = layout.baseline_offset - layout.cursor_offset
+                self.assertGreaterEqual(cursor_top, 0)
+                self.assertLessEqual(cursor_top + layout.cursor_height, layout.line_height)
+
+
 class EndFrameTest(PtyReelTestCase):
     """The static style is the finished session.
 
@@ -437,8 +478,6 @@ def _by_id(root: ElementTree.Element, identifier: str) -> ElementTree.Element:
 
 def _percentages(document: str) -> list[str]:
     """Pull the reveal stops out of a rendered stylesheet, in order."""
-    import re
-
     return re.findall(r"@keyframes r\d+\{0%\{opacity:0\}([\d.]+)%", document)
 
 

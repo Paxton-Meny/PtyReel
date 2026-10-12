@@ -189,11 +189,22 @@ def _window_rect(layout: Layout) -> str:
 
 
 def _content_rect(layout: Layout) -> str:
-    """Return the attributes of the region text is clipped to."""
-    top = layout.window_y + layout.title_bar_height
+    """Return the attributes of the region text is clipped to.
+
+    Vertically the region is exactly the terminal's rows, so a line scrolled
+    above the first row or not yet scrolled into the last one is hidden
+    rather than drawn in the padding, as in a real terminal. Nothing on a
+    legitimate row is cut by that: the baseline sits far enough inside each
+    row's box that the tallest ascender and the deepest descender of a
+    monospace font, and the cursor block, all stay within it.
+
+    Horizontally the region spans the window. A line never runs past the
+    last column, and a tighter edge could only shave the overhang of an
+    italic glyph there.
+    """
     return attrs(
         x=layout.window_x,
-        y=top,
+        y=layout.content_top,
         width=layout.window_width,
-        height=layout.window_y + layout.window_height - top,
+        height=layout.rows * layout.line_height,
     )
