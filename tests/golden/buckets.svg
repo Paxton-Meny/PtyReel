@@ -43,7 +43,7 @@ text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Dej
 <rect x="27" y="26" width="346" height="248" rx="10" ry="10"/>
 </clipPath>
 <clipPath id="content-clip">
-<rect x="27" y="70" width="346" height="204"/>
+<rect x="27" y="94" width="346" height="144"/>
 </clipPath>
 </defs>
 <rect x="0" y="0" width="400" height="300" rx="18" ry="18" fill="url(#backdrop)"/>
