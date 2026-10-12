@@ -281,7 +281,7 @@ text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Dej
 <rect x="60" y="35" width="780" height="330" rx="10" ry="10"/>
 </clipPath>
 <clipPath id="content-clip">
-<rect x="60" y="79" width="780" height="286"/>
+<rect x="60" y="103" width="780" height="216"/>
 </clipPath>
 </defs>
 <rect x="0" y="0" width="900" height="400" rx="18" ry="18" fill="url(#backdrop)"/>
