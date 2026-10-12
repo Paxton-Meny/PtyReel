@@ -36,6 +36,11 @@ All notable changes to this project are documented here. The format follows
   transform replaced the content's position instead of adding to it. Renderers
   that ignore animation drew the final frame correctly, which is how it went
   unnoticed.
+- Once a session scrolled, the line just above the first row stayed visible
+  in the window's top padding. Only the terminal's rows are shown now.
+- When output overflowed the window, the new lines appeared below the last
+  row, in the bottom padding, a moment before the scroll that made room for
+  them. Text and scrolling now change on the same moments.
 - A document set to `Set Loop false` went blank in a browser the moment it
   finished playing.
 - A reader who asked for reduced motion saw only the lines that existed when
