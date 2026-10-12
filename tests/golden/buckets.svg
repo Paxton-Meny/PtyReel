@@ -15,9 +15,9 @@ text{font-family:'Fira Code', 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Dej
 .w1{animation-name:w1}
 @keyframes w1{0%{opacity:0}17.6000%{opacity:1}}
 #scroll{animation:scroll 5.000s step-end infinite;animation-fill-mode:none}
-@keyframes scroll{0.0000%{transform:translateY(0px)}78.0000%{transform:translateY(-24px)}}
+@keyframes scroll{0.0000%{transform:translateY(0px)}77.6000%{transform:translateY(-24px)}}
 #cursor{fill:#0969da;animation:track 5.000s step-end infinite,blink 1.100s step-end infinite;animation-fill-mode:none,none}
-@keyframes track{0.0000%{transform:translate(0px,2px)}18.0000%{transform:translate(36px,26px)}78.0000%{transform:translate(36px,50px)}}
+@keyframes track{0.0000%{transform:translate(0px,2px)}17.6000%{transform:translate(36px,26px)}77.6000%{transform:translate(36px,50px)}}
 @keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>

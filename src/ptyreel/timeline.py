@@ -63,7 +63,14 @@ class Timeline:
     _window_names: dict[tuple[int, int], str]
 
     def percent(self, time_ms: int) -> str:
-        """Return a time as a percentage of the cycle.
+        """Return the start of a time's bucket as a percentage of the cycle.
+
+        Every stop in the document goes through here, so every animation
+        changes on the same bucket boundaries. A scroll stamped at the same
+        moment as the text it makes room for therefore lands on the same
+        stop. Placing the scroll at its exact time instead put it up to one
+        bucket after that text, which was drawn below the last row until
+        the scroll caught up.
 
         Parameters
         ----------
@@ -76,7 +83,8 @@ class Timeline:
             The percentage with four decimal places, so output stays byte
             stable and two nearby buckets never collapse onto one stop.
         """
-        return f"{100.0 * time_ms / self.cycle_ms:.4f}"
+        start = time_ms // BUCKET_MS * BUCKET_MS
+        return f"{100.0 * start / self.cycle_ms:.4f}"
 
     def reveal_class(self, time_ms: int) -> str:
         """Return the class that makes something appear at a time.

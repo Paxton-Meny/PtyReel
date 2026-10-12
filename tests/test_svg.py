@@ -365,11 +365,33 @@ class EmptyTest(PtyReelTestCase):
 
 
 class ScrollGridTest(PtyReelTestCase):
-    """Only the terminal's rows ever show.
+    """Only the terminal's rows ever show, at every moment of a scroll.
 
     The content clip used to start at the title bar, so a line scrolled
-    above the first row stayed visible in the top padding.
+    above the first row stayed visible in the top padding. And a scroll was
+    placed at its exact time while the text it made room for was placed at
+    the start of its bucket, so that text showed below the last row until
+    the scroll caught up.
     """
+
+    def scrolling(self) -> Recording:
+        """Fill the grid at the start, then add a line that forces one scroll.
+
+        The scroll happens at 2700ms, which is inside a bucket rather than
+        on its boundary, so the text and the scroll only coincide if they
+        are placed on the same clock.
+        """
+        rows = Layout.from_settings(BASE).rows
+        return Recording(
+            cols=COLS,
+            rows=rows,
+            duration_ms=4_000,
+            styles=(Style(),),
+            lines=tuple(line(index, f"line {index}", start_ms=0) for index in range(rows))
+            + (line(rows, "overflow", start_ms=2_700, birth_ms=2_700),),
+            scrolls=((0, 0), (2_700, 1)),
+            cursors=((0, rows - 1, 6), (2_700, rows, 8)),
+        )
 
     def test_clip_covers_exactly_the_rows(self) -> None:
         """The padding above the first row and below the last stays empty."""
@@ -402,6 +424,16 @@ class ScrollGridTest(PtyReelTestCase):
                 cursor_top = layout.baseline_offset - layout.cursor_offset
                 self.assertGreaterEqual(cursor_top, 0)
                 self.assertLessEqual(cursor_top + layout.cursor_height, layout.line_height)
+
+    def test_scroll_lands_with_the_text_it_makes_room_for(self) -> None:
+        """The new line and the scroll switch on at the same stop."""
+        document = render_svg(self.scrolling(), settings=BASE)
+        scroll = re.search(r"@keyframes scroll\{0\.0000%[^}]*\}([\d.]+)%", document)
+        reveal = re.search(r"@keyframes r0\{0%\{opacity:0\}([\d.]+)%", document)
+        self.assertIsNotNone(scroll)
+        self.assertIsNotNone(reveal)
+        self.assertEqual(scroll.group(1), reveal.group(1))
+        self.assert_svg_sane(document)
 
 
 class EndFrameTest(PtyReelTestCase):
