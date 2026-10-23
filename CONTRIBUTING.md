@@ -106,6 +106,25 @@ Documented so the history stays legible.
   git push --force origin v0
   ```
 
+- Pushing a full version tag such as `v0.2.0` runs `.github/workflows/release.yml`,
+  which checks that the tag matches the version in `pyproject.toml`, runs the
+  gate, then builds and publishes to PyPI through trusted publishing. No token
+  is stored anywhere. The job runs in the `pypi` environment, which should
+  require a reviewer so nothing publishes without a person approving it. To
+  publish a tag that was pushed before the workflow existed, run the
+  workflow by hand from `main` with that tag as the input. The pins are read
+  from `main` in that case, since an older tag may predate them. Files already
+  on PyPI are skipped, so rerunning a release finishes it rather than failing.
+  Only full versions trigger the workflow, never the moving `v0`.
+- The tools that workflow installs are pinned with hashes in `.github/release/`.
+  Regenerate a pin with a release at least two weeks old. The setuptools pin
+  must satisfy `build-system.requires` in `pyproject.toml`:
+
+  ```bash
+  echo uv==VERSION | uv pip compile - --generate-hashes --no-header -o .github/release/tools.txt
+  echo setuptools==VERSION | uv pip compile - --generate-hashes --no-header -o .github/release/build-constraints.txt
+  ```
+
 - Refresh the rendered demos by hand and commit them with the change that
   altered them. Continuous integration checks that `demos/out/hello.svg`,
   `demos/out/check.svg` and `demos/out/scroll.svg` match a fresh render, so a
