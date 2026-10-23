@@ -36,7 +36,7 @@ HAS_BASH = unittest.skipUnless(
 )
 
 XML_FORBIDDEN: Final[re.Pattern[str]] = re.compile(
-    "[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f\ud800-\udfff￾￿]"
+    r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f\ud800-\udfff￾￿]"
 )
 SVG_NS: Final[str] = "{http://www.w3.org/2000/svg}"
 _BANNED_MARKUP: Final[tuple[str, ...]] = (
