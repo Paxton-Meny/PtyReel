@@ -18,6 +18,7 @@ from ptyreel.parse import parse_tape
 
 ACTION = REPO_ROOT / "action.yml"
 WORKFLOWS = REPO_ROOT / ".github" / "workflows"
+RELEASE = REPO_ROOT / ".github" / "release"
 HOOKS = REPO_ROOT / "hooks"
 DEMOS = REPO_ROOT / "demos"
 GATE_STEPS = ("-m compileall -q src tests", "-m unittest discover -s tests")
@@ -255,6 +256,62 @@ class HookTest(PtyReelTestCase):
             path = line.split("\t", 1)[-1]
             with self.subTest(path=path):
                 self.assertEqual(mode, "100755", f"{path} is not executable")
+
+
+class ReleaseTest(PtyReelTestCase):
+    """Publishing installs only what is pinned and ships only real versions."""
+
+    def workflow(self) -> str:
+        """Return the release workflow."""
+        return (WORKFLOWS / "release.yml").read_text(encoding="utf-8")
+
+    def metadata(self) -> dict:
+        """Return the parsed pyproject."""
+        import tomllib
+
+        return tomllib.loads((REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+
+    def test_only_full_versions_publish(self) -> None:
+        """The moving major-version tag must never reach PyPI.
+
+        A push of it would fail the version check anyway, but only after the
+        job had started with a publishing token in reach.
+        """
+        self.assertIn('tags: ["v[0-9]+.[0-9]+.[0-9]+"]', self.workflow())
+
+    def test_publishes_the_packaged_name(self) -> None:
+        """The environment links to the project the metadata names."""
+        name = self.metadata()["project"]["name"]
+        self.assertIn(f"https://pypi.org/project/{name}/", self.workflow())
+
+    def test_tools_are_pinned_with_hashes(self) -> None:
+        """Every requirement names one version and the files it may be."""
+        for path in sorted(RELEASE.glob("*.txt")):
+            entries = re.split(
+                r"\n(?=\S)", re.sub(r"(?m)^#.*\n", "", path.read_text(encoding="utf-8"))
+            )
+            entries = [entry for entry in entries if entry.strip()]
+            self.assertTrue(entries, f"{path.name} pins nothing")
+            for entry in entries:
+                with self.subTest(path=path.name, entry=entry.split()[0]):
+                    self.assertRegex(entry, r"^[A-Za-z0-9_.-]+==[^\s\\]+")
+                    self.assertIn("--hash=sha256:", entry)
+
+    def test_build_backend_pin_satisfies_pyproject(self) -> None:
+        """The pinned setuptools is one the package itself accepts."""
+        floor = next(
+            requirement
+            for requirement in self.metadata()["build-system"]["requires"]
+            if requirement.startswith("setuptools")
+        )
+        minimum = int(re.fullmatch(r"setuptools>=(\d+)", floor).group(1))
+        pinned = re.search(
+            r"^setuptools==(\d+)\.",
+            (RELEASE / "build-constraints.txt").read_text(encoding="utf-8"),
+            re.MULTILINE,
+        )
+        self.assertIsNotNone(pinned, "setuptools is not pinned for the release build")
+        self.assertGreaterEqual(int(pinned.group(1)), minimum)
 
 
 class ClaimTest(PtyReelTestCase):
