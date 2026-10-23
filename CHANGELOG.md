@@ -9,6 +9,8 @@ All notable changes to this project are documented here. The format follows
 ### Added
 
 - Releases are published to PyPI as `ptyreel`.
+- A `ptyreel-check` hook for [pre-commit](https://pre-commit.com) validates
+  every staged `.tape` file without running it.
 
 ## [0.2.0] - 2026-10-11
 

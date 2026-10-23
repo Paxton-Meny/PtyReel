@@ -19,6 +19,7 @@ from ptyreel.parse import parse_tape
 ACTION = REPO_ROOT / "action.yml"
 WORKFLOWS = REPO_ROOT / ".github" / "workflows"
 RELEASE = REPO_ROOT / ".github" / "release"
+PRE_COMMIT_HOOKS = REPO_ROOT / ".pre-commit-hooks.yaml"
 HOOKS = REPO_ROOT / "hooks"
 DEMOS = REPO_ROOT / "demos"
 GATE_STEPS = ("-m compileall -q src tests", "-m unittest discover -s tests")
@@ -256,6 +257,56 @@ class HookTest(PtyReelTestCase):
             path = line.split("\t", 1)[-1]
             with self.subTest(path=path):
                 self.assertEqual(mode, "100755", f"{path} is not executable")
+
+
+class PreCommitHookTest(PtyReelTestCase):
+    """The hook other repositories install checks tapes and never renders them."""
+
+    def hook(self) -> dict[str, str]:
+        """Return the single hook definition as a flat mapping."""
+        lines = PRE_COMMIT_HOOKS.read_text(encoding="utf-8").splitlines()
+        self.assertEqual(
+            sum(line.startswith("- ") for line in lines), 1, "expected exactly one hook"
+        )
+        fields = {}
+        for line in lines:
+            key, _, value = line.removeprefix("- ").strip().partition(": ")
+            fields[key] = value
+        return fields
+
+    def project(self) -> dict:
+        """Return the project table from pyproject."""
+        import tomllib
+
+        return tomllib.loads(
+            (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        )["project"]
+
+    def test_hook_only_checks(self) -> None:
+        """Rendering runs a tape's commands, which a commit must never trigger."""
+        script, _, arguments = self.hook()["entry"].partition(" ")
+        self.assertIn(script, self.project()["scripts"])
+        self.assertEqual(arguments, "--check")
+
+    def test_hook_installs_from_this_repository(self) -> None:
+        """pre-commit builds the package itself, so the language must be python."""
+        self.assertEqual(self.hook()["language"], "python")
+
+    def test_hook_sees_tapes_and_nothing_else(self) -> None:
+        """The filter passes a tape anywhere in the tree and skips everything else."""
+        pattern = re.compile(self.hook()["files"])
+        for path in ("demos/hello.tape", "hello.tape"):
+            with self.subTest(path=path):
+                self.assertIsNotNone(pattern.search(path))
+        for path in ("demos/out/hello.svg", "hello.tape.bak", "README.md"):
+            with self.subTest(path=path):
+                self.assertIsNone(pattern.search(path))
+
+    def test_readme_configures_the_hook_that_exists(self) -> None:
+        """The README's snippet names this repository and this hook's id."""
+        readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn(f"- repo: {self.project()['urls']['Homepage']}\n", readme)
+        self.assertIn(f"- id: {self.hook()['id']}\n", readme)
 
 
 class ReleaseTest(PtyReelTestCase):
