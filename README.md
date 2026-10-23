@@ -4,6 +4,7 @@
 [![action self-test](https://github.com/Paxton-Meny/PtyReel/actions/workflows/action.yml/badge.svg?branch=main)](https://github.com/Paxton-Meny/PtyReel/actions/workflows/action.yml)
 [![CodeQL](https://github.com/Paxton-Meny/PtyReel/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/Paxton-Meny/PtyReel/security/code-scanning)
 [![release](https://img.shields.io/github/v/release/Paxton-Meny/PtyReel)](https://github.com/Paxton-Meny/PtyReel/releases)
+[![pypi](https://img.shields.io/pypi/v/ptyreel)](https://pypi.org/project/ptyreel/)
 [![python](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FPaxton-Meny%2FPtyReel%2Fmain%2Fpyproject.toml)](https://github.com/Paxton-Meny/PtyReel/blob/main/pyproject.toml)
 [![license](https://img.shields.io/github/license/Paxton-Meny/PtyReel)](LICENSE)
 
@@ -30,8 +31,8 @@ you and read the changelog before upgrading.
 
 ## Requirements
 
-Python 3.11 or newer on a POSIX system. Linux, macOS, or WSL. There is nothing
-to install: the runtime, the tests and the quality gate use only the standard
+Python 3.11 or newer on a POSIX system. Linux, macOS, or WSL. There are no
+dependencies: the runtime, the tests and the quality gate use only the standard
 library. Windows is a development platform only, because `pty` does not exist
 there.
 
@@ -68,9 +69,24 @@ needs no terminal:
 
 ## Use it from a shell
 
+Install it from PyPI, ideally into its own environment with `pipx`, or with
+`pip`:
+
 ```bash
-python -m ptyreel demos/hello.tape
+pipx install ptyreel
 ```
+
+```bash
+pip install ptyreel
+```
+
+Then render a tape:
+
+```bash
+ptyreel demos/hello.tape
+```
+
+`python -m ptyreel` runs the same command.
 
 ```
 usage: ptyreel [-h] [--workspace DIR] [--output PATH] [--check] [--version]
