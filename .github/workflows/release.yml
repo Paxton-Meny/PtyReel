@@ -1,0 +1,85 @@
+name: release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish, such as v0.1.0
+        required: true
+
+permissions: {}
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: pypi
+      url: https://pypi.org/project/ptyreel/
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out the tagged commit
+        shell: bash
+        env:
+          GH_REPOSITORY: ${{ github.repository }}
+          GH_SHA: ${{ github.sha }}
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "not a release tag: $TAG" >&2; exit 1; }
+          git init -q .
+          git -c protocol.version=2 \
+              -c 'credential.helper=!f() { printf "username=x-access-token\npassword=%s\n" "$GH_TOKEN"; }; f' \
+              fetch --no-tags --depth=1 "https://github.com/$GH_REPOSITORY" "$GH_SHA" "+refs/tags/$TAG:refs/tags/$TAG"
+          mkdir "$RUNNER_TEMP/release"
+          git show "$GH_SHA:.github/release/tools.txt" > "$RUNNER_TEMP/release/tools.txt"
+          git show "$GH_SHA:.github/release/build-constraints.txt" > "$RUNNER_TEMP/release/build-constraints.txt"
+          git checkout -q --detach "refs/tags/$TAG^{commit}"
+
+      - name: Verify the tag names the packaged version
+        shell: bash
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          version=$(python3 -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
+          [[ "$TAG" == "v$version" ]] || { echo "tag $TAG does not match version $version" >&2; exit 1; }
+
+      - name: Gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m compileall -q src tests
+          python3 -m unittest discover -s tests
+
+      - name: Install the pinned release tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/release/venv"
+          "$RUNNER_TEMP/release/venv/bin/pip" install --quiet --require-hashes --only-binary :all: \
+              -r "$RUNNER_TEMP/release/tools.txt"
+
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/release/venv/bin/uv" build --no-sources --out-dir dist \
+              --build-constraints "$RUNNER_TEMP/release/build-constraints.txt" --require-hashes
+          ls -l dist
+
+      - name: Publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/release/venv/bin/uv" publish --trusted-publishing always \
+              --check-url https://pypi.org/simple/ dist/*
