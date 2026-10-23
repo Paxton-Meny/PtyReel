@@ -243,6 +243,7 @@ src/ptyreel/        tape parsing, terminal model, pty driver, renderer
 tests/              unittest suite mirroring src/
 demos/              .tape sources and their rendered output
 hooks/              plain git hooks that run the quality gate
+.github/            CI, the PyPI release workflow and its pinned tools
 ```
 
 ## Contributing
@@ -252,7 +253,7 @@ small ones. Issues are welcome and are the supported way to report a bug or
 suggest a feature. Please do not spend your time on a change that will be
 closed unmerged.
 
-There is nothing to install. One command is the whole gate:
+Running the gate needs nothing installed. One command is the whole of it:
 
 ```bash
 python -m compileall -q src tests && python -m unittest discover -s tests
