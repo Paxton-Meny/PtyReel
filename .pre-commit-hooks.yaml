@@ -1,0 +1,6 @@
+- id: ptyreel-check
+  name: check PtyReel tapes
+  description: Validate .tape files without running them.
+  entry: ptyreel --check
+  language: python
+  files: \.tape$

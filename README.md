@@ -103,6 +103,36 @@ ptyreel: demos/hello.tape:7: Sleep needs a duration such as 250ms or 2s, got '50
 Exit codes are 0 for success, 1 for a reported error, 2 for a usage mistake,
 and 130 for an interrupt.
 
+## Use it as a git hook
+
+Checking a tape runs nothing and takes a fraction of a second, so a hook can
+catch a broken tape before it is committed. Rendering does not belong in a
+hook: it runs the tape's commands and plays every pause in real time, so leave
+that to a person or to the action.
+
+With [pre-commit](https://pre-commit.com), add the `ptyreel-check` hook to
+`.pre-commit-config.yaml`. It ships from 0.3.0. Pin a full version rather than
+`v0`, because pre-commit caches a repository by its `rev` and would never see
+the moving tag change. `pre-commit autoupdate` moves the pin to the latest
+release:
+
+```yaml
+repos:
+  - repo: https://github.com/Paxton-Meny/PtyReel
+    rev: v0.3.0
+    hooks:
+      - id: ptyreel-check
+```
+
+Without it, install PtyReel and save this as `.git/hooks/pre-commit`, then make
+it executable. The same script works as `.git/hooks/pre-push`:
+
+```sh
+#!/bin/sh
+tapes=$(git ls-files '*.tape')
+[ -z "$tapes" ] || exec ptyreel --check $tapes
+```
+
 ## Tape syntax
 
 One directive per line. Blank lines are ignored. `#` starts a comment unless it
@@ -238,12 +268,13 @@ See [SECURITY.md](SECURITY.md) to report a problem.
 ## Repository layout
 
 ```
-action.yml          the GitHub Action interface
-src/ptyreel/        tape parsing, terminal model, pty driver, renderer
-tests/              unittest suite mirroring src/
-demos/              .tape sources and their rendered output
-hooks/              plain git hooks that run the quality gate
-.github/            CI, the PyPI release workflow and its pinned tools
+action.yml              the GitHub Action interface
+.pre-commit-hooks.yaml  the check-only hook for pre-commit
+src/ptyreel/            tape parsing, terminal model, pty driver, renderer
+tests/                  unittest suite mirroring src/
+demos/                  .tape sources and their rendered output
+hooks/                  plain git hooks that run the quality gate
+.github/                CI, the PyPI release workflow and its pinned tools
 ```
 
 ## Contributing
