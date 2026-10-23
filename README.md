@@ -25,7 +25,7 @@ with CSS alone, so it plays inside a README where scripts never run.
 
 ## Status
 
-Early development, released as `v0.2.0`. The tape format and the rendered
+Early development, released as `v0.3.0`. The tape format and the rendered
 output may change in any 0.x release, so pin a full version if that matters to
 you and read the changelog before upgrading.
 
