@@ -361,6 +361,31 @@ class ClaimTest(PtyReelTestCase):
                     f"the README wears a badge for {name}, which does not exist",
                 )
 
+    def test_install_instructions_match_the_metadata(self) -> None:
+        """The README installs the project that is published, and runs what it installs.
+
+        A renamed distribution or console script would leave the README
+        telling readers to install something else, or to run a command the
+        package no longer provides.
+        """
+        import tomllib
+
+        project = tomllib.loads(
+            (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        )["project"]
+        readme = self.readme()
+        name = project["name"]
+        for command in (f"pipx install {name}", f"pip install {name}"):
+            with self.subTest(command=command):
+                self.assertIn(command, readme)
+        self.assertIn(f"https://img.shields.io/pypi/v/{name}", readme)
+        self.assertIn(f"https://pypi.org/project/{name}/", readme)
+        invoked = set(re.findall(r"(?m)^(\w[\w-]*) \S+\.tape$", readme))
+        self.assertTrue(invoked, "the README never runs a tape from a shell")
+        for script in invoked:
+            with self.subTest(script=script):
+                self.assertIn(script, project["scripts"])
+
     def test_python_floor_is_one_number_everywhere(self) -> None:
         """The floor in pyproject is the floor the README and the gate use.
 
